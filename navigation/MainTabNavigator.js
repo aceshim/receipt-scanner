@@ -14,18 +14,26 @@ import ProfileScreen from '../screens/ProfileScreen';
 import FollowScreen from '../screens/FollowScreen';
 
 export const ProfileStack = StackNavigator({
+  Home: {
+    screen: HomeScreen,
+  },
   Profile: {
     screen: ProfileScreen,
     navigationOptions: ({ navigation }) => ({
-      title: `${navigation.state.params? navigation.state.params.username:'gaearon'}'s Profile`,
+      title: `${navigation.state.params? navigation.state.params.username:'gaearon'}`,
       headerLeft: <HeaderBackButton onPress={() => navigation.goBack(null)} />,
+    headerRight: <Icon name='home' color='black' iconStyle={{fontSize: 28, marginRight: 10}} onPress={() => navigation.popToTop()}/> ,
+      headerStyle: { backgroundColor : 'white' }
     }),
   },
   Follower: {
     screen: FollowScreen,
     navigationOptions: ({ navigation }) => ({
-      title: `${navigation.state.params? navigation.state.params.username:'gaearon'}'s Follower`,
+      title: `${navigation.state.params.following? 'following':'follower'}`,
       headerLeft: <HeaderBackButton onPress={() => navigation.goBack(null)} />,
+      headerRight: <HeaderBackButton onPress={() => navigation.popToTop()} />,
+      headerRight: <Icon name='home' color='black' iconStyle={{fontSize: 28, marginRight: 10}} onPress={() => navigation.popToTop()}/> ,
+      headerStyle: { backgroundColor : 'white' }
     }),
   },
 });
@@ -33,10 +41,10 @@ export const ProfileStack = StackNavigator({
 export default TabNavigator(
   {
     Home: {
-      screen: HomeScreen,
+      screen: ProfileStack,
     },
     Links: {
-      screen: ProfileScreen,
+      screen: SettingsScreen,
     },
     Settings: {
       screen: SettingsScreen,

@@ -4,7 +4,6 @@ import { Button, List, ListItem, Header, Input, Avatar, Text } from 'react-nativ
 import Icon from 'react-native-vector-icons/Octicons';
 import { Ionicons } from '@expo/vector-icons';
 import { WebBrowser, Font } from 'expo';
-const base64 = require('base-64');
 
 const Dimensions = require('Dimensions');
 const window = Dimensions.get('window');
@@ -21,74 +20,25 @@ export default class App extends React.Component {
       follow: false,
       star: false,
       user: '',
-      auth_user: '',
-      auth_pass: '',
     }
-    this.updateParams = this.updateParams.bind(this);
+    this.updateUsername = this.updateUsername.bind(this);
   }
-  updateParams(params){
+  updateUsername(username){
     this.setState({
-      username: params.username,
-      auth_user: params.auth_user,
-      auth_pass: params.auth_pass,
-    })
+      username: username
+    });
   }
 
-  _isFollowing(username){
-    let result = false;
-    var headers = new Headers();
-    const params = this.props.navigation.state.params;
-    headers.append("Authorization", "Basic " + base64.encode(params.auth_user+":"+params.auth_pass));
-    const query = 'https://api.github.com/users/'+params.auth_user+'/following/'+username;
-    fetch(query, {
-      headers: headers
-    }).then((response) => {
-      console.log(response.status);
-      if (response.status==204) this.setState({follow: true});
-    })
-  }
-
-  _isStarring(reponame){
-    let result = false;
-    var headers = new Headers();
-    const params = this.props.navigation.state.params;
-    headers.append("Authorization", "Basic " + base64.encode(params.auth_user+":"+params.auth_pass));
-    const query = 'https://api.github.com/user/starred/'+params.auth_user+'/'+reponame;
-    fetch(query, {
-      headers: headers
-    }).then((response) => {
-      console.log(response.status);
-      if (response.status==204) this.setState({follow: true});
-    })
-  }
-
-  _onPressFollower = () => {
-
-    const params = this.props.navigation.state.params;
+  _onPressItem = (username) => {
+    this.updateUsername(username);
+    this.componentDidMount()
     this.props.navigation.push(
       'Follower',
-      { username: this.state.username, auth_user: params.auth_user, auth_pass: params.auth_pass, following: false }
-    );
-  }
-
-  _onPressFollowing = () => {
-
-    const params = this.props.navigation.state.params;
-    this.props.navigation.push(
-      'Follower',
-      { username: this.state.username, auth_user: params.auth_user, auth_pass: params.auth_pass, following: true }
+      { username: username }
     );
   }
 
   _onPressFollow(){
-    var headers = new Headers();
-    const params = this.props.navigation.state.params;
-    headers.append("Authorization", "Basic " + base64.encode(params.auth_user+":"+params.auth_pass));
-    console.log(this.state.username);
-    fetch('https://api.github.com/user/following/'+this.state.username, {
-        method: this.state.follow? 'DELETE': 'PUT',
-        headers: headers
-      });
     this.state.follow?
       this.setState({follow: false}):
       this.setState({follow: true})
@@ -103,6 +53,7 @@ export default class App extends React.Component {
   _onRefresh() {
     console.log('refreshing');
     this.setState({refreshing: true});
+    this.getFollowerInfo(this.state.username);
   }
 
   _onPressRepo(url){
@@ -114,18 +65,34 @@ export default class App extends React.Component {
   }
 
   componentDidMount() {
-    this.getRepoInfo(this.state.username)
-    .then(this.getUserInfo(this.state.username))
+    this.getRepoInfo(this.state.username);
+    this.getUserInfo(this.state.username);
+    Font.loadAsync({
+      'Billabong': require('../assets/fonts/Billabong.ttf'),
+    }).then(
+      ()=>{
+        this.setState({ fontLoaded: true })
+      }
+    );
   }
 
+  getFollowerInfo(username) {
+      console.log('Follower fetch');
+      fetch(`https://api.github.com/users/` + username + '/following')
+      .then(response => response.json())
+      .then(
+          users => {
+              this.setState({
+                  username: username,
+                  users: users,
+                  refreshing: false,
+              });
+          }
+      );
+  }
   getRepoInfo(username) {
       console.log('Repos fetch');
-      var headers = new Headers();
-      const params = this.props.navigation.state.params;
-      headers.append("Authorization", "Basic " + base64.encode(params.auth_user+":"+params.auth_pass));
-      return fetch('https://api.github.com/users/'+username+'/repos', {
-          headers: headers
-        })
+      fetch('https://api.github.com/users/'+username+'/repos')
       .then(response => response.json())
       .then(
           repos => {
@@ -138,27 +105,21 @@ export default class App extends React.Component {
       );
   }
   getUserInfo(username) {
-      const params = this.props.navigation.state.params;
-      const headers = new Headers();
-      headers.append("Authorization", "Basic " + base64.encode(params.auth_user+":"+params.auth_pass));
-      fetch(`https://api.github.com/users/` + username, {headers: headers})
+      fetch(`https://api.github.com/users/` + username)
       .then(response => response.json())
       .then(
           user => {
-
               this.setState({
                   username: user.login,
                   user: user
               });
           }
-      ).then(
-        this._isFollowing(this.state.username)
       );
   }
 
 
   render() {
-    if (!this.state.user || !this.state.repos)
+    if (!this.state.user || !this.state.repos || !this.state.fontLoaded)
       return (<View style={[styles.container, styles.horizontal]}>
         <ActivityIndicator size="large" color="#24292e" />
       </View>)
@@ -194,7 +155,7 @@ export default class App extends React.Component {
                   </View>
                 </TouchableHighlight>
                 <TouchableHighlight
-                  onPress={this._onPressFollower}
+                  onPress={this._onPressItem}
                   underlayColor='#dddddd'
                   >
                   <View style={styles.followerTextContainer}>
@@ -202,12 +163,12 @@ export default class App extends React.Component {
                           {user.followers}
                       </Text>
                       <Text style={styles.followerSlugText} numberOfLines={1}>
-                        follower
+                        Followers
                       </Text>
                   </View>
                 </TouchableHighlight>
                 <TouchableHighlight
-                  onPress={this._onPressFollowing}
+                  onPress={this._onPressItem}
                   underlayColor='#dddddd'
                   >
                   <View style={styles.followingTextContainer}>
@@ -215,7 +176,7 @@ export default class App extends React.Component {
                         {user.following}
                     </Text>
                     <Text style={styles.followerSlugText} numberOfLines={1}>
-                      following
+                      Followings
                     </Text>
                   </View>
                 </TouchableHighlight>
@@ -271,7 +232,7 @@ export default class App extends React.Component {
           backgroundColor="black"
         />
 
-        <ScrollView style={{backgroundColor:'white', height: window.height}}>
+      <ScrollView style={{backgroundColor:'white', height: window.height}}>
           <RefreshControl
               refreshing={this.state.refreshing}
               onRefresh={this._onRefresh.bind(this)}
@@ -281,25 +242,48 @@ export default class App extends React.Component {
           <Text style={{fontSize: 16, padding: 10, borderBottomColor: '#bbb', borderBottomWidth: 1}}>Repositories</Text>
           <View style={styles.repoContainer}>
             <List containerStyle={{marginBottom: 20,}}>
-                {
-                  this.state.repos.map((l, i) => (
+              {
+                this.state.repos.map((l, i) => (
+                  i%2 == 0?
                   <ListItem
                     roundAvatar
                     leftIcon={{name: 'repo', color: 'black', type:'octicon'}}
                     key={i}
                     title={l.name}
-                    titleNumberOfLines={1}
+                    titleNumberOfLines={2}
                     containerStyle={styles.leftContainer}
                     subtitle={l.description}
-                    subtitleNumberOfLines={2}
+                    subtitleNumberOfLines={3}
                     onPress={()=>this._onPressRepo(l.html_url)}
                     onPressRightIcon={this._onPressStar.bind(this)}
                     rightIcon={{name: 'star', type:'octicon', size: 5, color: (star?'gold':'gray')}}
-                  />
-                  ))
-                }
+                  />: null
+                ))
+              }
+            </List>
+            <List containerStyle={{marginBottom: 20}}>
+              {
+                this.state.repos.map((l, i) => (
+                  i%2 == 1 ?
+                    <ListItem
+                      roundAvatar
+                      leftIcon={{name: 'repo', color: 'black', type:'octicon'}}
+                      key={i}
+                      title={l.name}
+                      titleNumberOfLines={2}
+                      containerStyle={styles.rightContainer}
+                      subtitle={l.description}
+                      subtitleNumberOfLines={3}
+                      onPress={()=>this._onPressRepo(l.html_url)}
+                      onPressRightIcon={this._onPressStar.bind(this)}
+                      rightIcon={{name: 'star', type:'octicon', size: 5, color: (star?'gold':'gray')}}
+                    />:null
+                ))
+              }
             </List>
           </View>
+
+
         </ScrollView>
       </View>
 
@@ -328,9 +312,6 @@ const styles = StyleSheet.create({
     borderColor: "transparent",
     borderWidth: 0,
   },
-  signout: {
-    backgroundColor: "#dc3545",
-  },
   unfollow: {
     backgroundColor: "grey",
     borderColor: "black",
@@ -341,18 +322,18 @@ const styles = StyleSheet.create({
   },
   repoContainer: {
     flexDirection:"row",
-    marginBottom: 95,
+    marginBottom: 50,
     marginTop: -20,
   },
   leftContainer: {
     width: window.width,
-    height: 75,
+    height: 80,
     borderRightWidth: 1,
     borderRightColor: '#bbb',
   },
   rightContainer: {
     width: window.width,
-    height: 75,
+    height: 80,
     borderRightWidth: 1,
     borderRightColor: '#bbb',
   },

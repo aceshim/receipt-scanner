@@ -11,7 +11,6 @@ const window = Dimensions.get('window');
 export default class HomeScreen extends React.Component {
   static navigationOptions = {
     title: 'Home',
-    header: null,
   };
   constructor(props){
     super(props);

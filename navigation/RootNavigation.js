@@ -10,7 +10,7 @@ const RootStackNavigator = StackNavigator(
   {
     Login: {
       screen: LoginScreen,
-      headerMode: 'none',
+      headerVisible: true,
     },
     Main: {
       screen: MainTabNavigator,
@@ -22,7 +22,7 @@ const RootStackNavigator = StackNavigator(
         fontWeight: 'normal',
       },
     }),
-    headerMode: 'none',
+    headerMode: 'modal',
   }
 );
 

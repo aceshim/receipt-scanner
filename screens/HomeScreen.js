@@ -1,26 +1,30 @@
 import React from 'react';
-import { Alert, ScrollView, ActivityIndicator, StyleSheet, View, RefreshControl, TouchableHighlight} from 'react-native';
+import { Alert, ScrollView, ActivityIndicator, StyleSheet, View, RefreshControl, TouchableHighlight, StatusBar} from 'react-native';
 import { Button, List, ListItem, Header, Input, Avatar, Text } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Octicons';
 import { Ionicons } from '@expo/vector-icons';
 import { WebBrowser, Font } from 'expo';
+const base64 = require('base-64');
 
 const Dimensions = require('Dimensions');
 const window = Dimensions.get('window');
 
 export default class App extends React.Component {
   static navigationOptions = {
-    title: 'Home',
     header: null,
   };
   constructor(props){
     super(props);
     this.state = {
-      username: 'gaearon',
+      username: 'pensivej',
+      auth_user: 'pensivej',
+      auth_pass: 'john4148',
       refreshing: false,
       follow: false,
       star: false,
-      user: '',
+      following: true,
+      readyLoad: false,
+      followingUsers: [],
     }
     this.updateUsername = this.updateUsername.bind(this);
   }
@@ -30,19 +34,27 @@ export default class App extends React.Component {
     });
   }
 
-  _onPressItem = (username) => {
-    this.updateUsername(username);
-    this.componentDidMount()
-    this.props.navigation.navigate(
-      'Profile',
-      { username: username }
+  _isFollowing(username){
+    if (this.state.followingUsers.includes(username)) return true;
+    else return false;
+  }
+
+  _onPressFollower = () => {
+    this.props.navigation.push(
+      'Follower',
+      { username: this.state.username, auth_user: this.state.auth_user, auth_pass: this.state.auth_pass, following: false }
     );
   }
 
-  _onPressFollow(){
-    this.state.follow?
-      this.setState({follow: false}):
-      this.setState({follow: true})
+  _onPressFollowing = () => {
+    this.props.navigation.push(
+      'Follower',
+      { username: this.state.username, auth_user: this.state.auth_user, auth_pass: this.state.auth_pass, following: true }
+    );
+  }
+
+  _onPressSignOut(){
+    this.props.navigation.goBack();
   }
 
   _onPressStar(){
@@ -54,7 +66,9 @@ export default class App extends React.Component {
   _onRefresh() {
     console.log('refreshing');
     this.setState({refreshing: true});
-    this.getFollowerInfo(this.state.username);
+    const username = 'random';
+    this.getRepoInfo(username)
+    .then(this.getUserInfo(username))
   }
 
   _onPressRepo(url){
@@ -66,36 +80,29 @@ export default class App extends React.Component {
   }
 
   componentDidMount() {
-
-    this.getFollowerInfo(this.state.username);
-    this.getRepoInfo(this.state.username);
-    this.getUserInfo(this.state.username);
-    Font.loadAsync({
+    if (this._isFollowing('gaearon')) console.log('worked!');
+    console.log(this.props.navigation.state);
+    const username = this.props.navigation.state.params? this.props.navigation.state.params.username: 'gaearon';
+    console.log(username)
+    this.getRepoInfo(username)
+    .then(this.getUserInfo(username))
+    .then(Font.loadAsync({
       'Billabong': require('../assets/fonts/Billabong.ttf'),
     }).then(
       ()=>{
-        this.setState({ fontLoaded: true })
+        this.setState({ fontLoaded: true, readyLoad: true })
       }
-    );
+    ));
   }
 
-  getFollowerInfo(username) {
-      console.log('Follower fetch');
-      fetch(`https://api.github.com/users/` + username + '/following')
-      .then(response => response.json())
-      .then(
-          users => {
-              this.setState({
-                  username: username,
-                  users: users,
-                  refreshing: false,
-              });
-          }
-      );
-  }
   getRepoInfo(username) {
       console.log('Repos fetch');
-      fetch('https://api.github.com/users/'+username+'/repos')
+
+      var headers = new Headers();
+      headers.append("Authorization", "Basic " + base64.encode(this.state.auth_user+":"+this.state.auth_pass));
+      return fetch('https://api.github.com/user/repos', {
+          headers: headers
+        })
       .then(response => response.json())
       .then(
           repos => {
@@ -108,13 +115,18 @@ export default class App extends React.Component {
       );
   }
   getUserInfo(username) {
-      fetch(`https://api.github.com/users/` + username)
+      var headers = new Headers();
+      headers.append("Authorization", "Basic " + base64.encode(this.state.auth_user+":"+this.state.auth_pass));
+      fetch(`https://api.github.com/user`, {
+          headers: headers
+        })
       .then(response => response.json())
       .then(
           user => {
               this.setState({
                   username: user.login,
-                  user: user
+                  user: user,
+                  refreshing: false,
               });
           }
       );
@@ -122,8 +134,7 @@ export default class App extends React.Component {
 
 
   render() {
-
-    if (!this.state.user || !this.state.users || !this.state.repos || !this.state.fontLoaded)
+    if (!this.state.user || !this.state.repos || !this.state.fontLoaded)
       return (<View style={[styles.container, styles.horizontal]}>
         <ActivityIndicator size="large" color="#24292e" />
       </View>)
@@ -146,6 +157,19 @@ export default class App extends React.Component {
             <View style={styles.buttonsContainer}>
               <View style={styles.topButtonsContainer}>
                 <TouchableHighlight
+                  onPress={this._onPressRepos}
+                  underlayColor='#dddddd'
+                  >
+                  <View style={styles.reposTextContainer}>
+                    <Text style={styles.followerText} numberOfLines={1}>
+                      {user.public_repos}
+                    </Text>
+                    <Text style={styles.followerSlugText} numberOfLines={1}>
+                      Repos
+                    </Text>
+                  </View>
+                </TouchableHighlight>
+                <TouchableHighlight
                   onPress={this._onPressFollower}
                   underlayColor='#dddddd'
                   >
@@ -154,7 +178,7 @@ export default class App extends React.Component {
                           {user.followers}
                       </Text>
                       <Text style={styles.followerSlugText} numberOfLines={1}>
-                        Followers
+                        follower
                       </Text>
                   </View>
                 </TouchableHighlight>
@@ -167,30 +191,17 @@ export default class App extends React.Component {
                         {user.following}
                     </Text>
                     <Text style={styles.followerSlugText} numberOfLines={1}>
-                      Followings
-                    </Text>
-                  </View>
-                </TouchableHighlight>
-                <TouchableHighlight
-                  onPress={this._onPressRepos}
-                  underlayColor='#dddddd'
-                  >
-                  <View style={styles.reposTextContainer}>
-                    <Text style={styles.followerText} numberOfLines={1}>
-                      {user.public_repos}
-                    </Text>
-                    <Text style={styles.followerSlugText} numberOfLines={1}>
-                      Repositories
+                      following
                     </Text>
                   </View>
                 </TouchableHighlight>
               </View>
               <View style={styles.bottomButtonsContainer}>
                 <Button
-                  title={follow?'Following':'Follow'}
+                  title={'Sign Out'}
                   buttonStyle={{ width: 200, height: 30, borderRadius: 5, marginLeft: 20,
                   backgroundColor: follow?'transparent':'#dc3545', borderWidth: follow?1:0, borderColor:'#ccc', }}
-                  onPress={this._onPressFollow.bind(this)}
+                  onPress={this._onPressSignOut.bind(this)}
                   textStyle={{color:follow?'black':'white', fontSize: 14, fontWeight: '700', letterSpacing: 0.25}}
                 />
                 <Button
@@ -229,46 +240,20 @@ export default class App extends React.Component {
 
         </View>
 
-    // const followersList =
-    //   <List containerStyle={{marginBottom: 20, borderTopWidth: 0, borderBottomWidth: 0}}>
-    //     {
-    //       this.state.users.map((l, i) => (
-    //         <ListItem
-    //           containerStyle={{borderTopWidth: 0, borderBottomWidth: 0}}
-    //           avatar={<Avatar
-    //             rounded
-    //             medium
-    //             source={{uri: l.avatar_url}}
-    //             title={l.login}
-    //           />}
-    //           onPress={()=>Alert.alert(l.login)}
-    //           key={i}
-    //           title={l.login}
-    //           subtitle={l.login}
-    //           rightIcon={
-    //             <Button
-    //                 title={follow?'Following':'Follow'}
-    //                 titleStyle={{ fontWeight: "700", color: "black" }}
-    //                 buttonStyle={[styles.followButton, follow?styles.unfollow:styles.follow]}
-    //                 onPress={this._onPressFollow.bind(this)}
-    //                 textStyle={color:follow?'black':'white'}
-    //             />
-    //           }
-    //           style
-    //         />
-    //       ))
-    //     }
-    //   </List>
     return (
       <View>
+        <StatusBar
+          barStyle="dark-content"
+          backgroundColor="black"
+        />
         <Header backgroundColor='white'
           leftComponent={{ icon: 'mark-github', color: 'black', size: 28, type:'octicon'}}
           centerComponent={{ text: 'Github' , style: { color: 'black', fontSize:32, fontFamily: 'Billabong', marginBottom: -7} }}
-          outerContainerStyles={{height: 70, borderBottomColor: '#888', borderBottomWidth:0.4, paddingBottom:5}}
+          outerContainerStyles={{height: 64, borderBottomColor: '#888', borderBottomWidth:0.4, paddingBottom:5}}
           rightComponent={{ icon: 'home', color: 'black', size: 28 }}
         />
 
-        <ScrollView style={{backgroundColor:'white'}}>
+      <ScrollView style={{backgroundColor:'white', height: window.height}}>
           <RefreshControl
               refreshing={this.state.refreshing}
               onRefresh={this._onRefresh.bind(this)}
@@ -276,50 +261,27 @@ export default class App extends React.Component {
           {ListHeader}
 
           <Text style={{fontSize: 16, padding: 10, borderBottomColor: '#bbb', borderBottomWidth: 1}}>Repositories</Text>
-          <View style={styles.repoContainer}>
-            <List containerStyle={{marginBottom: 20,}}>
-              {
-                this.state.repos.map((l, i) => (
-                  i%2 == 0?
-                  <ListItem
-                    roundAvatar
-                    leftIcon={{name: 'repo', color: 'black', type:'octicon'}}
-                    key={i}
-                    title={l.name}
-                    titleNumberOfLines={2}
-                    containerStyle={styles.leftContainer}
-                    subtitle={l.description}
-                    subtitleNumberOfLines={3}
-                    onPress={()=>this._onPressRepo(l.html_url)}
-                    onPressRightIcon={this._onPressStar.bind(this)}
-                    rightIcon={{name: 'star', type:'octicon', size: 5, color: (star?'gold':'gray')}}
-                  />: null
-                ))
-              }
-            </List>
-            <List containerStyle={{marginBottom: 20}}>
-              {
-                this.state.repos.map((l, i) => (
-                  i%2 == 1 ?
+            <View style={styles.repoContainer}>
+              <List containerStyle={{marginBottom: 20,}}>
+                {
+                  this.state.repos.map((l, i) => (
                     <ListItem
                       roundAvatar
                       leftIcon={{name: 'repo', color: 'black', type:'octicon'}}
                       key={i}
                       title={l.name}
-                      titleNumberOfLines={2}
-                      containerStyle={styles.rightContainer}
+                      titleNumberOfLines={1}
+                      containerStyle={styles.leftContainer}
                       subtitle={l.description}
-                      subtitleNumberOfLines={3}
+                      subtitleNumberOfLines={2}
                       onPress={()=>this._onPressRepo(l.html_url)}
                       onPressRightIcon={this._onPressStar.bind(this)}
                       rightIcon={{name: 'star', type:'octicon', size: 5, color: (star?'gold':'gray')}}
-                    />:null
-                ))
-              }
-            </List>
-          </View>
-
-
+                    />
+                  ))
+                }
+              </List>
+            </View>
         </ScrollView>
       </View>
 
@@ -348,6 +310,9 @@ const styles = StyleSheet.create({
     borderColor: "transparent",
     borderWidth: 0,
   },
+  signout: {
+    backgroundColor: "#dc3545",
+  },
   unfollow: {
     backgroundColor: "grey",
     borderColor: "black",
@@ -358,18 +323,18 @@ const styles = StyleSheet.create({
   },
   repoContainer: {
     flexDirection:"row",
-    marginBottom: 50,
+    marginBottom: 95,
     marginTop: -20,
   },
   leftContainer: {
-    width: window.width/2,
-    height: window.width/4,
+    width: window.width,
+    height: 75,
     borderRightWidth: 1,
     borderRightColor: '#bbb',
   },
   rightContainer: {
-    width: window.width/2,
-    height: window.width/4,
+    width: window.width,
+    height: 75,
     borderRightWidth: 1,
     borderRightColor: '#bbb',
   },

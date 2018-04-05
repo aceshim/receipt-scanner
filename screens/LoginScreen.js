@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 import { View, Text, Image, StyleSheet,KeyboardAvoidingView, TextInput, TouchableOpacity, Alert, Button ,StatusBar, ActivityIndicator } from 'react-native';
-// import API from './API';
-const API = require('./API');
 const base64 = require('base-64');
 
 
@@ -14,7 +12,7 @@ class LoginScreen extends Component {
     constructor(props) {
       super(props);
       this.state = {
-        username: '',
+        username: 'pensivej',
         password: '',
         isLoading: false,
         message: '',
@@ -26,14 +24,21 @@ class LoginScreen extends Component {
     _onPasswordChanged = (event) => {
       this.setState({ password: event.nativeEvent.text });
     };
+    _checkValidInput(){
+      if (this.state.username != '' && this.state.password != '')
+        return true;
+      else
+        Alert.alert('Fill in all the blanks');
+        return false;
+    }
     _onButtonPress = () => {
       // this.props.navigation.navigate('SearchResult', {username: this.state.searchString});
       // Alert.alert('username: '+this.state.username+' password: ' + this.state.password);
       //
       // this.props.navigation.navigate('Main',{username:this.state.username});
-      if (this.state.username != '' && this.state.password != '')
-        this._userLoginTest();
-      else Alert.alert('Fill in all the blanks');
+
+      // if (_checkValidInput) this._userLoginTest();
+      this.props.navigation.navigate('Main',{username:'pensivej', password: 'thisispassword'});
     };
     _userLoginTest = () => {
       var headers = new Headers();
@@ -116,12 +121,12 @@ class LoginScreen extends Component {
                                 autoCorrect={false}
                                 keyboardType='email-address'
                                 returnKeyType="next"
-                                placeholder='Email or Mobile Num'
+                                placeholder='Email or Username'
                                 placeholderTextColor='rgba(225,225,225,0.7)'/>
 
                     <TextInput style = {styles.input}
                                onChange={this._onPasswordChanged}
-                               returnKeyType="go" ref={(input)=> this.passwordInput = input}
+                               returnKeyType="done" ref={(input)=> this.passwordInput = input}
                                placeholder='Password'
                                placeholderTextColor='rgba(225,225,225,0.7)'
                                secureTextEntry/>
