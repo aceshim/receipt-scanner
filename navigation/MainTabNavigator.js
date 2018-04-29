@@ -12,6 +12,7 @@ import SettingsScreen from '../screens/SettingsScreen';
 
 import ProfileScreen from '../screens/ProfileScreen';
 import FollowScreen from '../screens/FollowScreen';
+import CameraScreen from '../screens/CameraScreen';
 
 export const ProfileStack = StackNavigator({
   Home: {
@@ -38,20 +39,29 @@ export const ProfileStack = StackNavigator({
   },
 });
 
+export const PageStack = StackNavigator({
+  Home: {
+    screen: FollowScreen,
+  },
+  Camera: {
+    screen: CameraScreen,
+  }
+})
+
 export default TabNavigator(
   {
-    Home: {
-      screen: ProfileStack,
+    // Home: {
+    //   screen: FollowScreen,
+    // },
+    Person: {
+      screen: HomeScreen,
     },
-    Links: {
-      screen: SettingsScreen,
+    Camera: {
+      screen: CameraScreen,
     },
     Settings: {
       screen: SettingsScreen,
     },
-    Person: {
-      screen: ProfileScreen,
-    }
   },
   {
     navigationOptions: ({ navigation }) => ({
@@ -68,17 +78,19 @@ export default TabNavigator(
             iconName = 'home';
             iconSize = 28;
             break;
-          case 'Links':
-            iconName = 'search';
-            iconType = 'material';
-            iconSize = 32;
+          case 'Camera':
+            iconName = 'camera';
+            iconSize = 26;
             iconColor = focused? 'black': '#bbb';
             break;
           case 'Settings':
             iconName = focused? 'heart': 'heart-o';
             break;
           case 'Person':
-            iconName = focused? 'user': 'user-o';
+            iconName = 'file';
+            iconType = 'octicon';
+            iconSize = 26;
+            iconColor = focused? 'black': '#bbb';
         }
         return (
           <Icon

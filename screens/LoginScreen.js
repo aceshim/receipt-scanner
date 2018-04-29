@@ -38,7 +38,7 @@ class LoginScreen extends Component {
       // this.props.navigation.navigate('Main',{username:this.state.username});
 
       // if (_checkValidInput) this._userLoginTest();
-      this.props.navigation.navigate('Main',{username:'pensivej', password: 'thisispassword'});
+      this.props.navigation.navigate('Main',{username: this.state.username, password: this.state.password});
     };
     _userLoginTest = () => {
       var headers = new Headers();
@@ -102,8 +102,7 @@ class LoginScreen extends Component {
         return (
           <KeyboardAvoidingView behavior="padding" style={styles.container}>
               <View style={styles.loginContainer}>
-                    <Image resizeMode="contain" style={styles.logo} source={require('../Resources/cat.png')} />
-                    <Image resizeMode="contain" style={styles.logoText} source={require('../Resources/GitHub_Logo_White.png')} />
+                    <Image resizeMode="contain" style={styles.logo} source={require('../assets/images/icon.png')} />
                       {this.state.isLoading?
                         <View><Text></Text><ActivityIndicator size="large" color="#cfcfcf"/></View>
                         :null
@@ -122,13 +121,13 @@ class LoginScreen extends Component {
                                 keyboardType='email-address'
                                 returnKeyType="next"
                                 placeholder='Email or Username'
-                                placeholderTextColor='rgba(225,225,225,0.7)'/>
+                                placeholderTextColor='rgba(25,25,25,0.7)'/>
 
                     <TextInput style = {styles.input}
                                onChange={this._onPasswordChanged}
                                returnKeyType="done" ref={(input)=> this.passwordInput = input}
                                placeholder='Password'
-                               placeholderTextColor='rgba(225,225,225,0.7)'
+                               placeholderTextColor='rgba(25,25,25,0.7)'
                                secureTextEntry/>
                      {/*   <Button onPress={onButtonPress} title = 'Login' style={styles.loginButton} /> */}
                   <TouchableOpacity style={styles.buttonContainer} onPress={this._onButtonPress}>
@@ -146,7 +145,7 @@ class LoginScreen extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#24292e',
+        backgroundColor: '#ffffff',
     },
     loginContainer:{
         alignItems: 'center',
@@ -154,8 +153,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     logo: {
-        width: 300,
-        height: 100,
+      flex: 0.7
     },
     logoText: {
         width: 300,
@@ -173,13 +171,14 @@ const styles = StyleSheet.create({
     },
     input:{
         height: 40,
-        backgroundColor: 'rgba(225,225,225,0.2)',
+        backgroundColor: 'rgba(125,125,125,0.2)',
         marginBottom: 10,
         padding: 10,
-        color: '#fff'
+        color: 'black'
     },
     buttonContainer:{
-        backgroundColor: '#2980b6',
+        // backgroundColor: '#2980b6',
+        backgroundColor: '#74090e',
         paddingVertical: 15
     },
     buttonText:{

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Alert, ScrollView, ActivityIndicator, StyleSheet, View, RefreshControl, TouchableHighlight, StatusBar} from 'react-native';
+import { Animated, Alert, ScrollView, ActivityIndicator, StyleSheet, View, RefreshControl, TouchableHighlight, StatusBar} from 'react-native';
 import { Button, List, ListItem, Header, Input, Avatar, Text } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Octicons';
 import { Ionicons } from '@expo/vector-icons';
@@ -9,282 +9,164 @@ const base64 = require('base-64');
 const Dimensions = require('Dimensions');
 const window = Dimensions.get('window');
 
+import data from '../data/data.json';
+
+import CameraButton from './CameraButton';
+import Picker from './Picker';
+
+export const category = {
+  Default: {
+    title: "Uncategorized",
+    icon: {
+      name: 'file',
+      color: 'black',
+      type:'octicon',
+    }
+  },
+  Travel: {
+    title: "Travel",
+    icon: {
+      name: 'plane',
+      color: 'blue',
+      type:'font-awesome',
+    }
+  },
+  Entertainment: {
+    title: "Entertainment",
+    icon: {
+      name: 'headphones',
+      color: 'orange',
+      type:'font-awesome',
+    }
+  },
+  Grocery: {
+    title: "Grocery",
+    icon: {
+      name: 'shopping-cart',
+      color: 'green',
+      type:'font-awesome',
+    }
+  },
+  Dining: {
+    title: "Dining",
+    icon: {
+      name: 'food',
+      color: 'red',
+      type:'material-community',
+    }
+  },
+  Transport: {
+    title: "Auto & Transport",
+    icon: {
+      name: 'car-side',
+      color: 'purple',
+      type:'material-community',
+    }
+  },
+  Housing: {
+    title: "Housing & Bills",
+    icon: {
+      name: 'home',
+      color: 'navy',
+      type:'material-community',
+    }
+  }
+}
+
+
 export default class App extends React.Component {
   static navigationOptions = {
-    header: null,
+    // header: null,
   };
   constructor(props){
     super(props);
     this.state = {
-      username: 'pensivej',
-      auth_user: 'pensivej',
-      auth_pass: 'john4148',
       refreshing: false,
-      follow: false,
-      star: false,
-      following: true,
-      readyLoad: false,
-      followingUsers: [],
+      category: "Default",
+      selectedCategory: "Default",
+      offSet: new Animated.Value(window.height),
+      modal: true,
     }
-    this.updateUsername = this.updateUsername.bind(this);
+    this._changeCategory = this._changeCategory.bind(this);
   }
-  updateUsername(username){
+
+  _onRefresh(){
+
+  }
+
+  _changeCategory(category){
     this.setState({
-      username: username
-    });
-  }
-
-  _isFollowing(username){
-    if (this.state.followingUsers.includes(username)) return true;
-    else return false;
-  }
-
-  _onPressFollower = () => {
-    this.props.navigation.push(
-      'Follower',
-      { username: this.state.username, auth_user: this.state.auth_user, auth_pass: this.state.auth_pass, following: false }
-    );
-  }
-
-  _onPressFollowing = () => {
-    this.props.navigation.push(
-      'Follower',
-      { username: this.state.username, auth_user: this.state.auth_user, auth_pass: this.state.auth_pass, following: true }
-    );
-  }
-
-  _onPressSignOut(){
-    this.props.navigation.goBack();
-  }
-
-  _onPressStar(){
-    this.state.star?
-      this.setState({star: false}):
-      this.setState({star: true})
-  }
-
-  _onRefresh() {
-    console.log('refreshing');
-    this.setState({refreshing: true});
-    const username = 'random';
-    this.getRepoInfo(username)
-    .then(this.getUserInfo(username))
-  }
-
-  _onPressRepo(url){
-    WebBrowser.openBrowserAsync(url);
-  }
-
-  _onPressBlog(url){
-    WebBrowser.openBrowserAsync(url);
-  }
-
-  componentDidMount() {
-    if (this._isFollowing('gaearon')) console.log('worked!');
-    console.log(this.props.navigation.state);
-    const username = this.props.navigation.state.params? this.props.navigation.state.params.username: 'gaearon';
-    console.log(username)
-    this.getRepoInfo(username)
-    .then(this.getUserInfo(username))
-    .then(Font.loadAsync({
-      'Billabong': require('../assets/fonts/Billabong.ttf'),
-    }).then(
-      ()=>{
-        this.setState({ fontLoaded: true, readyLoad: true })
-      }
-    ));
-  }
-
-  getRepoInfo(username) {
-      console.log('Repos fetch');
-
-      var headers = new Headers();
-      headers.append("Authorization", "Basic " + base64.encode(this.state.auth_user+":"+this.state.auth_pass));
-      return fetch('https://api.github.com/user/repos', {
-          headers: headers
-        })
-      .then(response => response.json())
-      .then(
-          repos => {
-              // How can we use `this` inside a callback without binding it??
-              // Make sure you understand this fundamental difference with arrow functions!!!
-              this.setState({
-                  repos: repos
-              });
-          }
-      );
-  }
-  getUserInfo(username) {
-      var headers = new Headers();
-      headers.append("Authorization", "Basic " + base64.encode(this.state.auth_user+":"+this.state.auth_pass));
-      fetch(`https://api.github.com/user`, {
-          headers: headers
-        })
-      .then(response => response.json())
-      .then(
-          user => {
-              this.setState({
-                  username: user.login,
-                  user: user,
-                  refreshing: false,
-              });
-          }
-      );
+      selectedCategory: category,
+    })
   }
 
 
   render() {
-    if (!this.state.user || !this.state.repos || !this.state.fontLoaded)
-      return (<View style={[styles.container, styles.horizontal]}>
-        <ActivityIndicator size="large" color="#24292e" />
-      </View>)
 
-    const follow = this.state.follow
-    const star = this.state.star
-    const repos = this.state.repos
-    const user = this.state.user;
-
-    const ListHeader =
-        <View style={styles.titleContainer}>
-          <View style={styles.titleIconContainer}>
-            <Avatar
-              large
-              rounded
-              source={{uri: user.avatar_url}}
-              onPress={() => console.log("Works!")}
-              activeOpacity={0.7}
+    const dataView =
+    <View style={styles.repoContainer}>
+      <List containerStyle={{marginBottom: 20,}}>
+        {
+          data.map((l, i) => (
+            <ListItem
+              roundAvatar
+              leftIcon={l.category?category[l.category].icon:category["Default"].icon}
+              key={i}
+              title={l.company}
+              titleNumberOfLines={1}
+              containerStyle={styles.leftContainer}
+              subtitle={l.balance + '\n'+l.registered}
+              subtitleNumberOfLines={2}
+              onPress={()=>this._onPressRepo(l.html_url)}
+              onPressRightIcon={()=>this._onRefresh()}
             />
-            <View style={styles.buttonsContainer}>
-              <View style={styles.topButtonsContainer}>
-                <TouchableHighlight
-                  onPress={this._onPressRepos}
-                  underlayColor='#dddddd'
-                  >
-                  <View style={styles.reposTextContainer}>
-                    <Text style={styles.followerText} numberOfLines={1}>
-                      {user.public_repos}
-                    </Text>
-                    <Text style={styles.followerSlugText} numberOfLines={1}>
-                      Repos
-                    </Text>
-                  </View>
-                </TouchableHighlight>
-                <TouchableHighlight
-                  onPress={this._onPressFollower}
-                  underlayColor='#dddddd'
-                  >
-                  <View style={styles.followerTextContainer}>
-                      <Text style={styles.followerText} numberOfLines={1}>
-                          {user.followers}
-                      </Text>
-                      <Text style={styles.followerSlugText} numberOfLines={1}>
-                        follower
-                      </Text>
-                  </View>
-                </TouchableHighlight>
-                <TouchableHighlight
-                  onPress={this._onPressFollowing}
-                  underlayColor='#dddddd'
-                  >
-                  <View style={styles.followingTextContainer}>
-                    <Text style={styles.followerText} numberOfLines={1}>
-                        {user.following}
-                    </Text>
-                    <Text style={styles.followerSlugText} numberOfLines={1}>
-                      following
-                    </Text>
-                  </View>
-                </TouchableHighlight>
-              </View>
-              <View style={styles.bottomButtonsContainer}>
-                <Button
-                  title={'Sign Out'}
-                  buttonStyle={{ width: 200, height: 30, borderRadius: 5, marginLeft: 20,
-                  backgroundColor: follow?'transparent':'#dc3545', borderWidth: follow?1:0, borderColor:'#ccc', }}
-                  onPress={this._onPressSignOut.bind(this)}
-                  textStyle={{color:follow?'black':'white', fontSize: 14, fontWeight: '700', letterSpacing: 0.25}}
-                />
-                <Button
-                  buttonStyle={{ width: 40, height: 30, borderRadius: 5, marginRight: 15, borderWidth:1, borderColor:'#ccc', backgroundColor: 'transparent', padding: 0}}
-                  icon={{name: 'repo', color: 'black', type:'octicon', style:{padding:12}}}
-                />
-              </View>
-            </View>
-          </View>
-          <View style={styles.titleTextContainer}>
-            <View style={{flexDirection:'row', marginBottom: -10,}}>
-              <Text style={[styles.nameText]} numberOfLines={1}>
-                {user.name + '  '}
-              </Text>
-              <Text style={[styles.slugText]} numberOfLines={1}>
-                @{user.login}
-              </Text>
-            </View>
-            <Text style={styles.descriptionText}>
-              {user.bio}
-            </Text>
-            {user.blog?<Text style={[styles.descriptionText, {color: 'blue'}]}
-              onPress={()=>this._onPressBlog(user.blog)}>
-              {user.blog}
-            </Text>:null}
-            {user.email?<Text style={styles.descriptionText}>
-              {user.email}
-            </Text>:null}
-            {user.company?<Text style={styles.descriptionText}>
-              Works {user.company}
-            </Text>:null}
-            <Text style={styles.descriptionText}>
-              Created at {user.created_at}
-            </Text>
-          </View>
+          ))
+        }
+      </List>
+    </View>
+    const header =
 
-        </View>
+    <Header backgroundColor='white'
+      leftComponent={{ icon: 'menu', color: 'black', size: 28, }}
+      centerComponent={{ text: 'Reciept' , style: { color: 'black', fontSize:32, fontFamily: 'Billabong', marginBottom: -7} }}
+      outerContainerStyles={{height: 64, borderBottomColor: '#888', borderBottomWidth:0.4, paddingBottom:5}}
+      rightComponent={{ icon: 'home', color: 'black', size: 28 }}
+    />
 
     return (
-      <View>
+      <View style={styles.colorContainer}>
         <StatusBar
           barStyle="dark-content"
           backgroundColor="black"
         />
-        <Header backgroundColor='white'
-          leftComponent={{ icon: 'mark-github', color: 'black', size: 28, type:'octicon'}}
-          centerComponent={{ text: 'Github' , style: { color: 'black', fontSize:32, fontFamily: 'Billabong', marginBottom: -7} }}
-          outerContainerStyles={{height: 64, borderBottomColor: '#888', borderBottomWidth:0.4, paddingBottom:5}}
-          rightComponent={{ icon: 'home', color: 'black', size: 28 }}
-        />
+        {header}
+        <ScrollView style={{backgroundColor:'white', height: window.height}}>
+            <RefreshControl
+                refreshing={this.state.refreshing}
+                onRefresh={this._onRefresh.bind(this)}
+            />
 
-      <ScrollView style={{backgroundColor:'white', height: window.height}}>
-          <RefreshControl
-              refreshing={this.state.refreshing}
-              onRefresh={this._onRefresh.bind(this)}
-          />
-          {ListHeader}
+          <Text style={{fontSize: 28, padding: 10, paddingTop: 40, borderBottomColor: '#bbb', borderBottomWidth: 1}}>My Receipts</Text>
 
-          <Text style={{fontSize: 16, padding: 10, borderBottomColor: '#bbb', borderBottomWidth: 1}}>Repositories</Text>
-            <View style={styles.repoContainer}>
-              <List containerStyle={{marginBottom: 20,}}>
-                {
-                  this.state.repos.map((l, i) => (
-                    <ListItem
-                      roundAvatar
-                      leftIcon={{name: 'repo', color: 'black', type:'octicon'}}
-                      key={i}
-                      title={l.name}
-                      titleNumberOfLines={1}
-                      containerStyle={styles.leftContainer}
-                      subtitle={l.description}
-                      subtitleNumberOfLines={2}
-                      onPress={()=>this._onPressRepo(l.html_url)}
-                      onPressRightIcon={this._onPressStar.bind(this)}
-                      rightIcon={{name: 'star', type:'octicon', size: 5, color: (star?'gold':'gray')}}
-                    />
-                  ))
-                }
-              </List>
-            </View>
+                 <TouchableHighlight style={styles.button} underlayColor="transparent" onPress={ () => this.setState({modal: true}) }>
+                   <Text style={styles.buttonText}>CLICK TO SHOW PICKER</Text>
+                 </TouchableHighlight>
+                 <View style={styles.showtimeContainer}>
+                  <Text style={styles.showtime}>Now viewing selectedCategory of {this.state.selectedCategory}</Text>
+                  <Text style={styles.showtime}>Now viewing category of {this.state.category}</Text>
+                 </View>
+                 {this.state.modal?
+                   <Picker
+                   closeModal={() => this.setState({
+                     modal: false,
+                     category: this.state.selectedCategory
+                   })}
+                   offSet={this.state.offSet}
+                   changeCategory = {this._changeCategory}
+                   category={this.state.selectedCategory}
+                   catList = {category}/>: null}
         </ScrollView>
       </View>
-
     );
   }
 }
@@ -391,5 +273,17 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginTop: 6,
     color: '#4d4d4d',
+  },
+  showtimeContainer: {
+   borderTopColor: '#ededed',
+    borderTopWidth:1
+  },
+  showtime: {
+   padding:20,
+    textAlign: 'center'
+  },
+  button: {
+    marginTop:25,
+    marginBottom:25
   },
 })

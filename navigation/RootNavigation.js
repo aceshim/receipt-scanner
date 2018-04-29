@@ -8,10 +8,10 @@ import LoginScreen from '../screens/LoginScreen';
 
 const RootStackNavigator = StackNavigator(
   {
-    Login: {
-      screen: LoginScreen,
-      headerVisible: true,
-    },
+    // Login: {
+    //   screen: LoginScreen,
+    //   headerVisible: true,
+    // },
     Main: {
       screen: MainTabNavigator,
     },

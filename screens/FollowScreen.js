@@ -1,282 +1,362 @@
 import React from 'react';
-import { Alert, ScrollView, ActivityIndicator, StyleSheet, View, RefreshControl, TouchableHighlight} from 'react-native';
-import { Button, List, ListItem, Header, Input, Avatar, Text, Divider } from 'react-native-elements';
-import Icon from 'react-native-vector-icons/Octicons';
+import { ActionSheetIOS, SectionList, Image, ImageBackground, StyleSheet, Text, View, TouchableHighlight, TouchableOpacity } from 'react-native';
+import { Constants, Font } from 'expo';
 import { Ionicons } from '@expo/vector-icons';
-import { WebBrowser, Font } from 'expo';
-const base64 = require('base-64');
-
+import { Icon, Overlay } from 'react-native-elements';
+import Touchable from 'react-native-platform-touchable';
+import {
+  StackNavigator,
+} from 'react-navigation';
 const Dimensions = require('Dimensions');
 const window = Dimensions.get('window');
+const base64 = require('base-64');
 
-export default class HomeScreen extends React.Component {
+import CameraButton from './CameraButton';
+
+import data from '../data/data.json';
+
+export default class Me extends React.Component {
   static navigationOptions = {
     title: 'Home',
+    header: null,
   };
   constructor(props){
     super(props);
     this.state = {
-      username: this.props.navigation.state.params? this.props.navigation.state.params.username: 'gaearon',
-      refreshing: false,
-      follow: false,
-      star: false,
-      user: '',
-      following: true,
-      followingUsers: [],
+      username: 'gaearon',
+      fontLoaded: false,
+      auth_user: '',
+      auth_pass: '',
     }
     this.updateUsername = this.updateUsername.bind(this);
-    this.updateFollow = this.updateFollow.bind(this);
   }
   updateUsername(username){
     this.setState({
       username: username
     });
   }
-  updateFollow(following){
-    this.setState({
-      following: following
-    });
+  _onPressFollower = () =>{
+    this.props.navigation.navigate('Follower', {username: this.state.username});
   }
-
-  _onPressFollow(user, key){
-    let username = user.login;
-    var headers = new Headers();
-    const params = this.props.navigation.state.params;
-    console.log(params);
-    headers.append("Authorization", "Basic " + base64.encode(params.auth_user+":"+params.auth_pass));
-    console.log(username + ' added');
-    fetch('https://api.github.com/user/following/'+username, {
-        method: user.follow?'DELETE':'PUT',
-        headers: headers
-      });
-    this._toggleFollow(key);
+  _onPressFollowing = () =>{
+    this.props.navigation.navigate('Following', {username: this.state.username});
   }
-
-  _toggleFollow(key){
-    let usersCopy = Object.assign({}, this.state);
-    usersCopy.users = usersCopy.users.slice();
-    usersCopy.users[key] = Object.assign({}, usersCopy.users[key]);
-    usersCopy.users[key].follow? usersCopy.users[key].follow = false :usersCopy.users[key].follow = true;
-    this.setState(usersCopy);
+  _onPressRepos = () =>{
+    this.props.navigation.navigate('Repositories', {username: this.state.username});
   }
+  _onButtonPress = () => {
+    console.log('Sign out');
+    this.props.navigation.navigate('Login');
+  }
+  componentDidMount(){
 
-  _onPressItem = (username) => {
-   console.log('Pressed '+this.state.username)
-    // this.setState({
-    //   users:'',
-    //   username: username
-    // })
-    // this.getFollowerInfo(username);
-    // console.log('Pressed '+this.state.username)
-    const params = this.props.navigation.state.params;
-    this.props.navigation.navigate(
-      'Profile',
-      { username: username, auth_user: params.auth_user, auth_pass: params.auth_pass  }
+    console.log(this.props.navigation.state);
+    const username = this.props.navigation.state.params? this.props.navigation.state.params.username: 'gaearon';
+    this.state.auth_user?this.getUserInfoWithAuth(this.state.username):this.getUser(this.state.username);
+    Font.loadAsync({
+      'Ikaros': require('../assets/fonts/Ikaros-Regular.otf'),
+    }).then(
+    ()=>this.setState({ fontLoaded: true })
     );
   }
 
-  _onRefresh() {
-    console.log('refreshing');
-    this.setState({refreshing: true});
-    this.getFollowerInfo(this.state.username);
+  getUserInfo(username) {
+      fetch(`https://api.github.com/users/` + username)
+      .then(response => response.json())
+      .then(
+          user => {
+              this.setState({
+                  username: user.login,
+                  user: user
+              });
+          }
+      );
   }
 
-  componentDidMount() {
-    this.updateUsername(this.props.navigation.state.params.username)
-    this.updateFollow(this.props.navigation.state.params.following)
-    console.log(this.props.navigation.state);
-    this.getFollowerInfo(this.state.username);
-  }
-
-  getFollowerInfo(username) {
-      console.log('2Follower fetch');
-      console.log(username);
-
+  getUserInfoWithAuth(username) {
       var headers = new Headers();
-      const params = this.props.navigation.state.params
-      headers.append("Authorization", "Basic " + base64.encode(this.props.navigation.state.params.auth_user+":"+this.props.navigation.state.params.auth_pass));
-      const query = params.following? '/following': '/followers'
-      fetch(`https://api.github.com/users/` + username + query, {
+      headers.append("Authorization", "Basic " + base64.encode(this.state.auth_user+":"+this.state.auth_pass));
+      fetch(`https://api.github.com/user`, {
           headers: headers
         })
       .then(response => response.json())
       .then(
-          users => {
-              for (const u in users){
-                this._isFollowing(users[u].login, u)
-                users[u].follow = true
-              }
+          user => {
               this.setState({
-                  username: username,
-                  users: users,
+                  username: user.login,
+                  user: user,
                   refreshing: false,
               });
           }
       );
   }
 
-  _isFollowing(username, u){
-    let result = false;
-    var headers = new Headers();
-    const params = this.props.navigation.state.params;
-    headers.append("Authorization", "Basic " + base64.encode(params.auth_user+":"+params.auth_pass));
-    const query = 'https://api.github.com/users/'+params.auth_user+'/following/'+username;
-    fetch(query, {
-      headers: headers
-    }).then((response) => {
-      console.log(response.status);
-      if (response.status!=204) this._toggleFollow(u);
-    })
-  }
 
   render() {
+    if (!this.state.user) {
+      return null;
+    }
+    const user = this.state.user;
 
-    if (!this.state.users)
-      return (<View style={[styles.container, styles.horizontal]}>
-        <ActivityIndicator size="large" color="#24292e" />
-      </View>)
+    const username = this.props.navigation.state.params;
+    if (username != undefined){
+      if (this.state.username != username.username){
+        this.getUserInfo(username.username)
+      }
+    }
 
-    console.log('Render Follow');
+    const sections = [
+      { data: [{ value: '$185.00' }], title: 'Walmart' },
+      { data: [{ value: '$15.23' }], title: 'Country Market' },
+      { data: [{ value: '$7.89' }], title: 'Amazon' },
+      { data: [{ value: '$28.38' }], title: 'Amazon' },
+      { data: [{ value: '$33.43' }], title: 'Bestbuy' },
+      { data: [{ value: '$29.13' }], title: 'Meijer' },
+      { data: [{ value: '$76.43' }], title: 'Am-Ko' },
+    ];
+    const ListFooter = () => {
+      return (
+        <TouchableOpacity style={styles.buttonContainer} onPress={this._onButtonPress}>
+              <Text style={styles.buttonText}>SIGN OUT</Text>
+        </TouchableOpacity>
+      )
+    }
 
-    const follow = this.state.follow
-    console.log(this.state.users);
-    return (
-      <View style={{backgroundColor:'white'}}>
-
-      <ScrollView style={{backgroundColor:'white', height: window.height}}>
-          <RefreshControl
-              refreshing={this.state.refreshing}
-              onRefresh={this._onRefresh.bind(this)}
-          />
-        <List containerStyle={{marginBottom: 34, marginTop: 0, borderTopWidth: 0,}}>
-            {
-              this.state.users.map((l, i) => (
-                <ListItem
-                  containerStyle={{borderTopWidth: 0, borderBottomWidth: 0}}
-                  avatar={
-                    <Avatar
-                    rounded
-                    medium
-                    source={{uri: l.avatar_url}}
-                    title={l.login}
-                    />
-                  }
-                  onPress={()=>this._onPressItem(l.login)}
-                  key={i}
-                  title={l.login}
-                  subtitle={l.login}
-                  rightIcon={
-                    <Button
-                        title={l.follow?'Following':'Follow'}
-                        buttonStyle={[styles.followButton, {backgroundColor:l.follow?'transparent':'#3099ec', borderWidth:l.follow?1:0}]}
-                        onPress={()=>this._onPressFollow(l, i)}
-                        textStyle={{color:l.follow?'black':'white', fontSize:14}}
-                    />
-                  }
-                />
-              ))
+    const ListHeader = () => {
+      return (
+        <View style={styles.titleContainer}>
+          <View style={styles.titleIconContainer}>
+            {this.state.fontLoaded?
+              <ImageBackground style={styles.profileImage} source={{uri: user.avatar_url}}>
+                <View style={styles.titleTextContainer}>
+                  <Text style={[styles.nameText, {fontFamily: 'Ikaros'}]} numberOfLines={1}>
+                    {user.name}
+                  </Text>
+                  <Text style={[styles.slugText, {fontFamily: 'Ikaros'}]} numberOfLines={1}>
+                    @{user.login}
+                  </Text>
+                </View>
+              </ImageBackground>:null
             }
-          </List>
-        </ScrollView>
-      </View>
+          </View>
+          <View style={styles.buttonsContainer}>
+            <TouchableHighlight
+              onPress={this._onPressFollower}
+              underlayColor='#dddddd'
+              >
+              <View style={styles.followerTextContainer}>
+                  <Text style={styles.followerSlugText} numberOfLines={1}>
+                    Spending
+                  </Text>
+                  <Text style={styles.followerText} numberOfLines={1}>
+                      <Ionicons style={styles.followIcon} name='logo-usd' size={16}/> {user.followers}
+                  </Text>
+              </View>
+            </TouchableHighlight>
+            <TouchableHighlight
+              onPress={this._onPressFollowing}
+              underlayColor='#dddddd'
+              >
+              <View style={styles.followingTextContainer}>
+                <Text style={styles.followerSlugText} numberOfLines={1}>
+                  Reciepts
+                </Text>
+                <Text style={styles.followerText} numberOfLines={1}>
+                  <Ionicons style={styles.followIcon} name='ios-document' size={16}/> {user.following}
+                </Text>
+              </View>
+            </TouchableHighlight>
+            <TouchableHighlight
+              onPress={this._onPressRepos}
+              underlayColor='#dddddd'
+              >
+              <View style={styles.reposTextContainer}>
+                <Text style={styles.followerSlugText} numberOfLines={1}>
+                  Folders
+                </Text>
+                <Text style={styles.followerText} numberOfLines={1}>
+                  <Ionicons style={styles.followIcon} name="ios-folder" size={16}/> {user.public_repos}
+                </Text>
+              </View>
+            </TouchableHighlight>
+          </View>
+        </View>
+      );
+    };
+    const cameraButton =
+    <View style={styles.cameraButton}>
+      <Icon
+        raised
+        reverse
+        name='camera'
+        type='font-awesome'
+        color='#FF5252'
+        onPress={() => this._cameraPressed()}
+        />
+    </View>
 
+    const v =
+      <SectionList
+        style={styles.container}
+        renderItem={this._renderItem}
+        renderSectionHeader={this._renderSectionHeader}
+        stickySectionHeadersEnabled={true}
+        keyExtractor={(item, index) => index}
+        ListHeaderComponent={ListHeader}
+        ListFooterComponent={ListFooter}
+        sections={sections}
+      />
+    return (
+      <View style={styles.container}>
+        {v}
+      </View>
     );
   }
+  _cameraPressed(){
+    // console.log('camera pressed');
+    // this.props.navigation.navigate('Camera');
+    ActionSheetIOS.showActionSheetWithOptions({
+      options: ['Cancel', 'Take Picture', 'Use Picture From Library'],
+      // destructiveButtonIndex: 1,
+      cancelButtonIndex: 0,
+    },
+    (buttonIndex) => {
+      if (buttonIndex === 1) {
+        console.log("Take Picture")
+      } else if (buttonIndex === 2){
+        console.log("Use Library")
+      }
+    });
+  }
+
+  _renderSectionHeader = ({ section }) => {
+    return <SectionHeader title={section.title} />;
+  };
+
+  _renderItem = ({ item }) => {
+    if (item.type === 'color') {
+      return (
+        <SectionContent>
+          {item.value && <Color value={item.value} />}
+        </SectionContent>
+      );
+    } else {
+      return (
+        <SectionContent>
+          <Text style={styles.sectionContentText}>
+            {item.value}
+          </Text>
+        </SectionContent>
+      );
+    }
+  };
+
+
 }
+
+
+
+const SectionHeader = ({ title }) => {
+  return (
+    <View style={styles.sectionHeaderContainer}>
+      <Text style={styles.sectionHeaderText}>
+        {title}
+      </Text>
+    </View>
+  );
+};
+
+const SectionContent = props => {
+  return (
+    <View style={styles.sectionContentContainer}>
+      {props.children}
+    </View>
+  );
+};
+
+const AppIconPreview = ({ iconUrl }) => {
+  if (!iconUrl) {
+    iconUrl =
+      '../Resources/dark_cat.png';
+  }
+
+  return (
+    <Image
+      source={{ uri: iconUrl }}
+      style={{ width: 64, height: 64 }}
+      resizeMode="cover"
+    />
+  );
+};
+
+const Color = ({ value }) => {
+  if (!value) {
+    return <View />;
+  } else {
+    return (
+      <View style={styles.colorContainer}>
+        <View style={[styles.colorPreview, { backgroundColor: value }]} />
+        <View style={styles.colorTextContainer}>
+          <Text style={styles.sectionContentText}>
+            {value}
+          </Text>
+        </View>
+      </View>
+    );
+  }
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center'
-  },
-  horizontal: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    padding: 10
-  },
-  followButton:{
-    width: 110,
-    height: 26,
-    borderRadius: 5,
-    marginRight: -15,
-    borderColor: '#bbb',
-  },
-  follow: {
-    backgroundColor: "#3099ec",
-    borderColor: "transparent",
-    borderWidth: 0,
-  },
-  unfollow: {
-    backgroundColor: "grey",
-    borderColor: "black",
-    borderWidth: 0.2,
-  },
-  unfollowText:{
-    color: "black",
-  },
-  repoContainer: {
-    flexDirection:"row",
-    marginBottom: 50,
-    marginTop: -20,
-  },
-  leftContainer: {
-    width: window.width/2,
-    height: window.width/4,
-    borderRightWidth: 1,
-    borderRightColor: '#bbb',
-  },
-  rightContainer: {
-    width: window.width/2,
-    height: window.width/4,
-    borderRightWidth: 1,
-    borderRightColor: '#bbb',
+    backgroundColor: '#fff',
   },
   titleContainer: {
-    paddingVertical: 10,
-    paddingLeft: 10,
+    // paddingHorizontal: 15,
+    // paddingTop: 15,
+    // paddingBottom: 15,
+    // flexDirection: 'row',
   },
-  titleIconContainer: {
-    paddingVertical: 10,
-    flexDirection:'row',
+  titleTextContainer: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    // alignItems: 'center',
   },
   buttonsContainer: {
-    flex: 1,
-    flexDirection:'column',
-    justifyContent:'space-around',
-    // alignItems:'center',
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'center',
   },
-  topButtonsContainer: {
-    flex: 1,
-    flexDirection:'row',
-    justifyContent:'space-around',
-    marginLeft: 20,
-
-    // alignItems:'center',
+  sectionHeaderContainer: {
+    backgroundColor: '#fbfbfb',
+    paddingVertical: 8,
+    paddingHorizontal: 15,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: '#ededed',
   },
-  bottomButtonsContainer: {
-    flex: 1,
-    flexDirection:'row',
-    justifyContent:'space-around',
-    alignItems:'center',
-  },
-  followerText: {
-    textAlign: 'center',
+  sectionHeaderText: {
     fontSize: 14,
-    fontWeight: 'bold',
-    color: '#4d4d4d',
   },
-  followerSlugText: {
-    textAlign: 'center',
-    fontSize: 11,
-    color: '#a39f9f',
-    backgroundColor: 'transparent',
+  sectionContentContainer: {
+    paddingTop: 8,
+    paddingBottom: 12,
+    paddingHorizontal: 15,
+  },
+  sectionContentText: {
+    color: '#808080',
+    fontSize: 14,
   },
   nameText: {
     fontWeight: '600',
-    color: 'black',
+    fontSize: window.height/20,
+    paddingTop: window.height*0.5,
+    paddingLeft: window.height/40,
+    color: '#cccccc',
   },
   slugText: {
     color: '#a39f9f',
+    fontSize: window.height/30,
+    paddingLeft: window.height/40,
     backgroundColor: 'transparent',
     marginBottom: 10,
   },
@@ -285,4 +365,73 @@ const styles = StyleSheet.create({
     marginTop: 6,
     color: '#4d4d4d',
   },
-})
+  followerTextContainer: {
+    paddingVertical: 15,
+    paddingHorizontal: 30,
+    alignItems: 'center',
+  },
+  followingTextContainer: {
+    paddingVertical: 10,
+    paddingHorizontal: 30,
+    alignItems: 'center',
+  },
+  reposTextContainer: {
+    paddingVertical: 10,
+    paddingHorizontal: 30,
+    alignItems: 'center',
+  },
+  followerText: {
+    paddingTop: 5,
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#4d4d4d',
+  },
+  followerSlugText: {
+    fontSize: 14,
+    color: '#a39f9f',
+    backgroundColor: 'transparent',
+  },
+  colorContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  colorPreview: {
+    width: 17,
+    height: 17,
+    borderRadius: 2,
+    marginRight: 6,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: '#ccc',
+  },
+  colorTextContainer: {
+    flex: 1,
+  },
+  profileImage: {
+    flex: 1,
+    // height: window.height*2/3,
+  },
+  followIcon: {
+    paddingTop: 30,
+    marginTop: 30,
+    flexDirection: 'row',
+    top: 50,
+  },
+  buttonContainer:{
+      width: window.width * 0.6,
+      alignSelf: 'center',
+      backgroundColor: '#b62029',
+      paddingVertical: 15,
+      marginTop: 30,
+      marginBottom: 30,
+  },
+  buttonText:{
+      color: '#fff',
+      textAlign: 'center',
+      fontWeight: '700'
+  },
+  cameraButton: {
+    position: 'absolute',
+    right: 15,
+    bottom: 15,
+  }
+});
