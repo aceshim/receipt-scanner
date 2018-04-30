@@ -4,6 +4,7 @@ import { Button, List, ListItem, Header, Input, Avatar, Text } from 'react-nativ
 import Icon from 'react-native-vector-icons/Octicons';
 import { Ionicons } from '@expo/vector-icons';
 import { WebBrowser, Font } from 'expo';
+import ListPopover from 'react-native-list-popover';
 const base64 = require('base-64');
 
 const Dimensions = require('Dimensions');
@@ -13,6 +14,8 @@ import data from '../data/data.json';
 
 import CameraButton from './CameraButton';
 import Picker from './Picker';
+
+const items = ['Item 1', 'Item 2'];
 
 export const category = {
   Default: {
@@ -83,9 +86,9 @@ export default class App extends React.Component {
     this.state = {
       refreshing: false,
       category: "Default",
-      selectedCategory: "Default",
       offSet: new Animated.Value(window.height),
-      modal: true,
+      modal: false,
+      list: false,
     }
     this._changeCategory = this._changeCategory.bind(this);
   }
@@ -139,7 +142,6 @@ export default class App extends React.Component {
           barStyle="dark-content"
           backgroundColor="black"
         />
-        {header}
         <ScrollView style={{backgroundColor:'white', height: window.height}}>
             <RefreshControl
                 refreshing={this.state.refreshing}
@@ -148,13 +150,19 @@ export default class App extends React.Component {
 
           <Text style={{fontSize: 28, padding: 10, paddingTop: 40, borderBottomColor: '#bbb', borderBottomWidth: 1}}>My Receipts</Text>
 
-                 <TouchableHighlight style={styles.button} underlayColor="transparent" onPress={ () => this.setState({modal: true}) }>
+                 <TouchableHighlight style={styles.button} underlayColor="transparent" onPress={ () => this.setState({list: true}) }>
                    <Text style={styles.buttonText}>CLICK TO SHOW PICKER</Text>
                  </TouchableHighlight>
                  <View style={styles.showtimeContainer}>
-                  <Text style={styles.showtime}>Now viewing selectedCategory of {this.state.selectedCategory}</Text>
                   <Text style={styles.showtime}>Now viewing category of {this.state.category}</Text>
+                   <Text style={styles.showtime}>Now viewing category of {category[this.state.category].title}</Text>
                  </View>
+                 <ListPopover
+                  list={Object.keys(category)}
+                  isVisible={this.state.list}
+                  onClick={(picked) => this.setState({category: picked})}
+                  onClose={() => this.setState({list: false})}/>
+
                  {this.state.modal?
                    <Picker
                    closeModal={() => this.setState({

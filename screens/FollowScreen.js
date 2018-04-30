@@ -35,24 +35,10 @@ export default class Me extends React.Component {
       username: username
     });
   }
-  _onPressFollower = () =>{
-    this.props.navigation.navigate('Follower', {username: this.state.username});
-  }
-  _onPressFollowing = () =>{
-    this.props.navigation.navigate('Following', {username: this.state.username});
-  }
-  _onPressRepos = () =>{
-    this.props.navigation.navigate('Repositories', {username: this.state.username});
-  }
-  _onButtonPress = () => {
-    console.log('Sign out');
-    this.props.navigation.navigate('Login');
-  }
   componentDidMount(){
 
-    console.log(this.props.navigation.state);
     const username = this.props.navigation.state.params? this.props.navigation.state.params.username: 'gaearon';
-    this.state.auth_user?this.getUserInfoWithAuth(this.state.username):this.getUser(this.state.username);
+    this.state.auth_user?this.getUserInfoWithAuth(this.state.username):this.getUserInfo(this.state.username);
     Font.loadAsync({
       'Ikaros': require('../assets/fonts/Ikaros-Regular.otf'),
     }).then(
@@ -209,6 +195,7 @@ export default class Me extends React.Component {
     return (
       <View style={styles.container}>
         {v}
+        {cameraButton}
       </View>
     );
   }
@@ -223,8 +210,10 @@ export default class Me extends React.Component {
     (buttonIndex) => {
       if (buttonIndex === 1) {
         console.log("Take Picture")
+        this.props.navigation.navigate('Edit');
       } else if (buttonIndex === 2){
         console.log("Use Library")
+        this.props.navigation.navigate('Edit');
       }
     });
   }

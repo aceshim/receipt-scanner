@@ -13,6 +13,8 @@ import SettingsScreen from '../screens/SettingsScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import FollowScreen from '../screens/FollowScreen';
 import CameraScreen from '../screens/CameraScreen';
+import EditReceipt from '../screens/EditReceipt';
+import ReceiptList from '../screens/ReceiptList';
 
 export const ProfileStack = StackNavigator({
   Home: {
@@ -44,17 +46,21 @@ export const PageStack = StackNavigator({
     screen: FollowScreen,
   },
   Camera: {
-    screen: CameraScreen,
+    screen: EditReceipt,
+  },
+  Edit: {
+    screen: EditReceipt,
   }
 })
 
 export default TabNavigator(
   {
-    // Home: {
-    //   screen: FollowScreen,
-    // },
-    Person: {
-      screen: HomeScreen,
+    Home: {
+      // screen: FollowScreen,
+      screen: ReceiptList,
+    },
+    Edit: {
+      screen: EditReceipt,
     },
     Camera: {
       screen: CameraScreen,
@@ -86,7 +92,7 @@ export default TabNavigator(
           case 'Settings':
             iconName = focused? 'heart': 'heart-o';
             break;
-          case 'Person':
+          case 'Edit':
             iconName = 'file';
             iconType = 'octicon';
             iconSize = 26;
