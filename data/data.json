@@ -74,7 +74,7 @@
     "phone": "+1 (806) 543-3579",
     "address": "184 Malbone Street, Rockhill, District Of Columbia, 3951",
     "registered": "Sunday, June 19, 2016 10:56 AM",
-    "category": null,
+    "category": "Housing",
   },
   {
     "_id": "5ad65295c754b75a858ae8fd",
@@ -85,7 +85,7 @@
     "phone": "+1 (972) 465-2612",
     "address": "351 Homecrest Court, Hayes, New Hampshire, 6826",
     "registered": "Friday, November 11, 2016 7:15 AM",
-    "category": null,
+    "category": "Default",
   },
   {
     "_id": "5ad652959947d0dd3cc67f3a",
@@ -96,7 +96,7 @@
     "phone": "+1 (839) 526-3421",
     "address": "788 Dewitt Avenue, Jennings, Pennsylvania, 665",
     "registered": "Friday, August 19, 2016 3:12 PM",
-    "category": null,
+    "category": "Grocery",
   },
   {
     "_id": "5ad65295697ea7648e44e29d",
@@ -107,7 +107,7 @@
     "phone": "+1 (873) 576-2242",
     "address": "755 Conselyea Street, Healy, Virgin Islands, 4850",
     "registered": "Thursday, January 4, 2018 6:04 AM",
-    "category": null,
+    "category": "Grocery",
   },
   {
     "_id": "5ad652959426c455c628d153",
@@ -118,7 +118,7 @@
     "phone": "+1 (950) 411-3692",
     "address": "730 Tudor Terrace, Woodruff, Guam, 5100",
     "registered": "Friday, August 18, 2017 6:34 PM",
-    "category": null,
+    "category": "Housing",
   },
   {
     "_id": "5ad652950c99b6d4d6d041cc",
@@ -129,7 +129,7 @@
     "phone": "+1 (820) 504-2457",
     "address": "656 Summit Street, Saddlebrooke, Delaware, 2753",
     "registered": "Friday, September 11, 2015 11:23 AM",
-    "category": null,
+    "category": "Travel",
   },
   {
     "_id": "5ad65295e4d5b5c076ce9661",
@@ -140,7 +140,7 @@
     "phone": "+1 (875) 414-3827",
     "address": "700 Batchelder Street, Norwood, Colorado, 9004",
     "registered": "Saturday, December 13, 2014 2:49 AM",
-    "category": null,
+    "category": "Travel",
   },
   {
     "_id": "5ad652951b119daadba37ff2",
@@ -151,7 +151,7 @@
     "phone": "+1 (846) 503-3865",
     "address": "159 Butler Place, Allison, South Carolina, 2143",
     "registered": "Monday, November 28, 2016 9:11 AM",
-    "category": null,
+    "category": "Travel",
   },
   {
     "_id": "5ad652957c974962b0d70286",
@@ -162,7 +162,7 @@
     "phone": "+1 (919) 415-3946",
     "address": "386 Aberdeen Street, Bellamy, Alaska, 7538",
     "registered": "Friday, January 2, 2015 9:25 AM",
-    "category": null,
+    "category": "Default",
   },
   {
     "_id": "5ad6529545df04d5c427581a",
@@ -173,7 +173,7 @@
     "phone": "+1 (803) 534-3148",
     "address": "526 Prospect Avenue, Shaft, North Carolina, 7600",
     "registered": "Saturday, June 14, 2014 8:49 AM",
-    "category": null,
+    "category": "Default",
   },
   {
     "_id": "5ad65295fc12026e4f3195b2",
@@ -184,7 +184,7 @@
     "phone": "+1 (894) 492-3315",
     "address": "233 Vanderbilt Street, Westwood, Vermont, 506",
     "registered": "Tuesday, September 30, 2014 8:11 AM",
-    "category": null,
+    "category": "Housing",
   },
   {
     "_id": "5ad65295ce088e9d94466429",
@@ -195,7 +195,7 @@
     "phone": "+1 (895) 554-3408",
     "address": "923 Highland Place, Freelandville, Georgia, 2398",
     "registered": "Thursday, May 18, 2017 12:28 PM",
-    "category": null,
+    "category": "Default",
   },
   {
     "_id": "5ad65295094c609acacb820c",
@@ -206,7 +206,7 @@
     "phone": "+1 (861) 578-2220",
     "address": "867 Roosevelt Place, Homeland, Wyoming, 6363",
     "registered": "Sunday, April 2, 2017 6:04 AM",
-    "category": null,
+    "category": "Default",
   },
   {
     "_id": "5ad652959c9c6786b12c282b",
@@ -217,7 +217,7 @@
     "phone": "+1 (940) 513-3957",
     "address": "662 Milford Street, Elwood, Maryland, 3773",
     "registered": "Wednesday, June 11, 2014 4:02 PM",
-    "category": null,
+    "category": "Default",
   },
   {
     "_id": "5ad6529530554946166c50dd",
@@ -228,6 +228,6 @@
     "phone": "+1 (900) 430-2716",
     "address": "465 Kathleen Court, Fingerville, Connecticut, 8661",
     "registered": "Sunday, June 29, 2014 8:32 PM",
-    "category": null,
+    "category": "Travel",
   }
 ]
