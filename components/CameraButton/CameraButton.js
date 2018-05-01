@@ -20,7 +20,7 @@ export default class CameraButton extends Component{
 
   _onPress(){
     ActionSheetIOS.showActionSheetWithOptions({
-      options: ['Cancel', 'Take Picture', 'Use Picture From Library'],
+      options: ['Cancel', 'Take Picture', 'Use Picture From Library', 'Manually Enter'],
       // destructiveButtonIndex: 1,
       cancelButtonIndex: 0,
     },

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { TouchableHighlight, ScrollView, View, Text, StyleSheet } from 'react-native';
+import { ActionSheetIOS, TouchableHighlight, ScrollView, View, Text, StyleSheet } from 'react-native';
 import { Input, ListItem, Header, Icon, Button } from 'react-native-elements';
 
 import data from '../data/data.json';
@@ -14,6 +14,7 @@ export const category = {
       name: 'question',
       color: 'black',
       type:'font-awesome',
+      size: 36
     }
   },
   Travel: {
@@ -71,77 +72,130 @@ export default class ReceiptList extends Component{
     super(props);
     this.state={
       selected: [true, true, true, true, true, true, true, true],
-      selectAll: true,
+      selectAll: false,
       searchTerm: '',
     }
     this._unselectAll = this._unselectAll.bind(this);
+    this._onChangeSearchTerm = this._onChangeSearchTerm.bind(this);
 
   }
-  searchUpdated(term) {
-    this.setState({ searchTerm: term })
-  }
 
-  _onSelectCategroy(index){
+  _onSelectCategory(index){
     const { selected } = this.state;
     selected[index] = !selected[index];
-    this.setState={
+    this.setState({
       selected: selected,
-    }
-    this.forceUpdate();
+    })
   }
 
   _selectAll(){
-    console.log('select all')
     var { selected, selectAll } = this.state;
     for (i = 0; i < selected.length; i++){
       selected[i] = true;
     }
-    var temp = true;
-    this.setState={
+    this.setState({
       selected: selected,
-    }
-    this.setState={
       selectAll: false,
-    }
-    this.forceUpdate();
-    console.log(this.state);
+    })
   }
   _unselectAll(){
-    console.log('unselect all')
-
     var { selected, selectAll } = this.state;
     for (i = 0; i < selected.length; i++){
       selected[i] = false;
     }
-    var temp = true;
-    this.setState={
+    this.setState({
       selected: selected,
-    }
-    this.setState={
       selectAll: true,
-    }
-    this.forceUpdate();
-    console.log(this.state);
+    })
   }
   _onPressEdit(item){
-    console.log('here');
-    console.log(item);
+    this.props.navigation.navigate('Add', {item: item});
   }
   _onChangeSearchTerm(searchTerm){
-    console.log('changed')
     this.setState({
       searchTerm: searchTerm,
     })
     this.forceUpdate()
   }
 
+  _cameraPressed(){
+    ActionSheetIOS.showActionSheetWithOptions({
+      options: ['Cancel', 'Take Picture', 'Use Picture From Library', 'Manually Enter'],
+      // destructiveButtonIndex: 1,
+      cancelButtonIndex: 0,
+    },
+    (buttonIndex) => {
+      if (buttonIndex === 1) {
+        console.log("Take Picture")
+        this.props.navigation.navigate('Add');
+      } else if (buttonIndex === 2){
+        console.log("Use Library")
+        this.props.navigation.navigate('Add');
+      } else if (buttonIndex === 3){
+        console.log("Manually Enter")
+        this.props.navigation.navigate('Add');
+      }
+    });
+  }
+
+  _toReadableDate(date){
+    return date.toISOString().slice(0,10);
+  }
+
   render(){
+
+    const cameraButton = <View style={styles.cameraButton}>
+      <Icon
+        raised
+        reverse
+        name='plus'
+        type='material-community'
+        color='#FF5252'
+        size={24}
+        onPress={() => this._cameraPressed()}
+        />
+    </View>
+
+
+    console.log(this.props.navigation.state.params);
+
+    const { params } = this.props.navigation.state;
+
+    if (params){
+      if (params.add && !params.data.index){
+        data.push({
+          company: params.data.company,
+          balance: '$'+params.data.amount.replace('$',''),
+          category: params.data.selectedCategory ,
+          registered: this._toReadableDate(params.data.chosenDate),
+          comment: params.data.comment,
+          index: data.length + 1,
+        })
+      } else if (params.add) {
+        for (var i = 0; i < data.length; i++) {
+          if (data[i].index === params.data.index) {
+            data[i] = {
+              company: params.data.company,
+              balance: '$'+params.data.amount.replace('$',''),
+              category: params.data.selectedCategory ,
+              registered: this._toReadableDate(params.data.chosenDate),
+              comment: params.data.comment,
+              index: data.length + 1,
+            };
+          }
+        }
+      }
+      else if (params.remove){
+        delete data[index]
+      }
+    }
+
 
     return (
       <View style={styles.container}>
         <Header backgroundColor='white'
           statusBarProps={{ barStyle: 'dark-content' }}
-          centerComponent={{ text: 'Receipt List', style:{marginLeft:40,fontSize: 22, fontWeight: '300'}}}
+          centerComponent={{ text: 'Receipt List', style:{marginLeft:70,fontSize: 22, fontWeight: '300'}}}
           outerContainerStyles={styles.headerContainer}
           rightComponent={
             this.state.selectAll?
@@ -167,7 +221,7 @@ export default class ReceiptList extends Component{
                   name={category[l].icon.name}
                   type={category[l].icon.type}
                   color={category[l].icon.color}
-                  onPress={()=>this._onSelectCategroy(i)}
+                  onPress={()=>this._onSelectCategory(i)}
                   key={i}
                   />
               ))}
@@ -189,10 +243,9 @@ export default class ReceiptList extends Component{
                 onChangeText={(text)=>this._onChangeSearchTerm(text)}
               />
                   {
-                    data.map((l, i) => (
-                      console.log(this.state.searchTerm),
+                    data.slice(0).reverse().map((l, i) => (
                         this.state.selected[Object.keys(category).indexOf(l.category)]
-                        && (l.company.toLowerCase().indexOf(this.state.searchTerm.toLowerCase())>=0)?
+                        && (l.company.toLowerCase().indexOf(this.state.searchTerm.toLowerCase())>=0 || !this.state.searchTerm)?
                         <ListItem
                           leftIcon={l.category?category[l.category].icon:category["Default"].icon}
                           key={i}
@@ -205,14 +258,16 @@ export default class ReceiptList extends Component{
                           rightIcon={
                             <Icon
                               name="edit"
-                              color="#888"/>
+                              color="#888"
+                              onPress={()=>this._onPressEdit(l)}/>
                           }
-                          onPressRightIcon={()=>this._onPressEdit(l)}
+
                         />:null
                     ))
                   }
             </ScrollView>
         </View>
+        {cameraButton}
       </View>
     )
   }
@@ -257,8 +312,8 @@ const styles = StyleSheet.create({
     color: '#027afe',
   },
   selectAllTouch:{
-    // backgroundColor:'red',
     paddingTop: 10,
+    width: window.width*0.25,
   },
   searchInputContainer:{
     alignSelf: 'center',
@@ -272,5 +327,10 @@ const styles = StyleSheet.create({
   },
   searchInputText:{
     fontSize: 16,
+  },
+  cameraButton: {
+    position: 'absolute',
+    right: 15,
+    bottom: 15,
   }
 })

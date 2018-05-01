@@ -1,8 +1,8 @@
 Arguments: 
-  /usr/local/Cellar/node/9.9.0/bin/node /usr/local/Cellar/yarn/1.5.1_1/libexec/bin/yarn.js add base64
+  /usr/local/Cellar/node/9.9.0/bin/node /usr/local/Cellar/yarn/1.5.1_1/libexec/bin/yarn.js install victory-native
 
 PATH: 
-  /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
+  /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Applications/Wireshark.app/Contents/MacOS
 
 Yarn version: 
   1.5.1
@@ -25,10 +25,13 @@ npm manifest:
     },
     "dependencies": {
       "@expo/samples": "2.1.1",
+      "base-64": "^0.1.0",
       "expo": "^25.0.0",
       "react": "16.2.0",
       "react-native": "https://github.com/expo/react-native/archive/sdk-25.0.0.tar.gz",
-      "react-native-elements": "^0.19.0",
+      "react-native-chart": "^1.0.8-beta",
+      "react-native-elements": "^1.0.0-beta4",
+      "react-native-list-popover": "^1.1.1",
       "react-navigation": "^1.0.0-beta.27"
     },
     "devDependencies": {
@@ -175,6 +178,13 @@ Lockfile:
     version "0.3.1"
     resolved "https://registry.yarnpkg.com/ansi/-/ansi-0.3.1.tgz#0c42d4fb17160d5a9af1e484bace1c66922c1b21"
   
+  anymatch@^1.3.0:
+    version "1.3.2"
+    resolved "https://registry.yarnpkg.com/anymatch/-/anymatch-1.3.2.tgz#553dcb8f91e3c889845dfdba34c77721b90b9d7a"
+    dependencies:
+      micromatch "^2.1.5"
+      normalize-path "^2.0.0"
+  
   anymatch@^2.0.0:
     version "2.0.0"
     resolved "https://registry.yarnpkg.com/anymatch/-/anymatch-2.0.0.tgz#bcb24b4f37934d9aa7ac17b4adaf89e7c76ef2eb"
@@ -295,6 +305,10 @@ Lockfile:
     version "1.0.0"
     resolved "https://registry.yarnpkg.com/astral-regex/-/astral-regex-1.0.0.tgz#6c8c3fb827dd43ee3918f27b82782ab7658a6fd9"
   
+  async-each@^1.0.0:
+    version "1.0.1"
+    resolved "https://registry.yarnpkg.com/async-each/-/async-each-1.0.1.tgz#19d386a1d9edc6e7c1c85d388aedbcc56d33602d"
+  
   async-limiter@~1.0.0:
     version "1.0.0"
     resolved "https://registry.yarnpkg.com/async-limiter/-/async-limiter-1.0.0.tgz#78faed8c3d074ab81f22b4e985d79e8738f720f8"
@@ -329,6 +343,27 @@ Lockfile:
     version "1.6.0"
     resolved "https://registry.yarnpkg.com/aws4/-/aws4-1.6.0.tgz#83ef5ca860b2b32e4a0deedee8c771b9db57471e"
   
+  babel-cli@^6.10.1:
+    version "6.26.0"
+    resolved "https://registry.yarnpkg.com/babel-cli/-/babel-cli-6.26.0.tgz#502ab54874d7db88ad00b887a06383ce03d002f1"
+    dependencies:
+      babel-core "^6.26.0"
+      babel-polyfill "^6.26.0"
+      babel-register "^6.26.0"
+      babel-runtime "^6.26.0"
+      commander "^2.11.0"
+      convert-source-map "^1.5.0"
+      fs-readdir-recursive "^1.0.0"
+      glob "^7.1.2"
+      lodash "^4.17.4"
+      output-file-sync "^1.1.2"
+      path-is-absolute "^1.0.1"
+      slash "^1.0.0"
+      source-map "^0.5.6"
+      v8flags "^2.1.1"
+    optionalDependencies:
+      chokidar "^1.6.1"
+  
   babel-code-frame@^6.26.0:
     version "6.26.0"
     resolved "https://registry.yarnpkg.com/babel-code-frame/-/babel-code-frame-6.26.0.tgz#63fd43f7dc1e3bb7ce35947db8fe369a3f58c74b"
@@ -360,6 +395,16 @@ Lockfile:
       private "^0.1.7"
       slash "^1.0.0"
       source-map "^0.5.6"
+  
+  babel-eslint@^6.0.0:
+    version "6.1.2"
+    resolved "https://registry.yarnpkg.com/babel-eslint/-/babel-eslint-6.1.2.tgz#5293419fe3672d66598d327da9694567ba6a5f2f"
+    dependencies:
+      babel-traverse "^6.0.20"
+      babel-types "^6.0.19"
+      babylon "^6.0.18"
+      lodash.assign "^4.0.0"
+      lodash.pickby "^4.0.0"
   
   babel-generator@^6.18.0, babel-generator@^6.26.0:
     version "6.26.1"
@@ -527,6 +572,12 @@ Lockfile:
       find-babel-config "^1.0.1"
       glob "^7.1.1"
       resolve "^1.2.0"
+  
+  babel-plugin-react-transform@2.0.2:
+    version "2.0.2"
+    resolved "https://registry.yarnpkg.com/babel-plugin-react-transform/-/babel-plugin-react-transform-2.0.2.tgz#515bbfa996893981142d90b1f9b1635de2995109"
+    dependencies:
+      lodash "^4.6.1"
   
   babel-plugin-react-transform@^3.0.0:
     version "3.0.0"
@@ -819,6 +870,14 @@ Lockfile:
       core-js "^2.4.0"
       regenerator-runtime "^0.10.0"
   
+  babel-polyfill@^6.26.0:
+    version "6.26.0"
+    resolved "https://registry.yarnpkg.com/babel-polyfill/-/babel-polyfill-6.26.0.tgz#379937abc67d7895970adc621f284cd966cf2153"
+    dependencies:
+      babel-runtime "^6.26.0"
+      core-js "^2.5.0"
+      regenerator-runtime "^0.10.5"
+  
   babel-preset-es2015-node@^6.1.1:
     version "6.1.1"
     resolved "https://registry.yarnpkg.com/babel-preset-es2015-node/-/babel-preset-es2015-node-6.1.1.tgz#60b23157024b0cfebf3a63554cb05ee035b4e55f"
@@ -882,6 +941,40 @@ Lockfile:
     dependencies:
       babel-plugin-jest-hoist "^22.4.3"
       babel-plugin-syntax-object-rest-spread "^6.13.0"
+  
+  babel-preset-react-native@^1.5.3:
+    version "1.9.2"
+    resolved "https://registry.yarnpkg.com/babel-preset-react-native/-/babel-preset-react-native-1.9.2.tgz#b22addd2e355ff3b39671b79be807e52dfa145f2"
+    dependencies:
+      babel-plugin-check-es2015-constants "^6.5.0"
+      babel-plugin-react-transform "2.0.2"
+      babel-plugin-syntax-async-functions "^6.5.0"
+      babel-plugin-syntax-class-properties "^6.5.0"
+      babel-plugin-syntax-flow "^6.5.0"
+      babel-plugin-syntax-jsx "^6.5.0"
+      babel-plugin-syntax-trailing-function-commas "^6.5.0"
+      babel-plugin-transform-class-properties "^6.5.0"
+      babel-plugin-transform-es2015-arrow-functions "^6.5.0"
+      babel-plugin-transform-es2015-block-scoping "^6.5.0"
+      babel-plugin-transform-es2015-classes "^6.5.0"
+      babel-plugin-transform-es2015-computed-properties "^6.5.0"
+      babel-plugin-transform-es2015-destructuring "^6.5.0"
+      babel-plugin-transform-es2015-for-of "^6.5.0"
+      babel-plugin-transform-es2015-function-name "^6.5.0"
+      babel-plugin-transform-es2015-literals "^6.5.0"
+      babel-plugin-transform-es2015-modules-commonjs "^6.5.0"
+      babel-plugin-transform-es2015-parameters "^6.5.0"
+      babel-plugin-transform-es2015-shorthand-properties "^6.5.0"
+      babel-plugin-transform-es2015-spread "^6.5.0"
+      babel-plugin-transform-es2015-template-literals "^6.5.0"
+      babel-plugin-transform-flow-strip-types "^6.5.0"
+      babel-plugin-transform-object-assign "^6.5.0"
+      babel-plugin-transform-object-rest-spread "^6.5.0"
+      babel-plugin-transform-react-display-name "^6.5.0"
+      babel-plugin-transform-react-jsx "^6.5.0"
+      babel-plugin-transform-react-jsx-source "^6.5.0"
+      babel-plugin-transform-regenerator "^6.5.0"
+      react-transform-hmr "^1.0.4"
   
   babel-preset-react-native@^4.0.0:
     version "4.0.0"
@@ -948,7 +1041,7 @@ Lockfile:
       babylon "^6.18.0"
       lodash "^4.17.4"
   
-  babel-traverse@^6.18.0, babel-traverse@^6.24.1, babel-traverse@^6.26.0:
+  babel-traverse@^6.0.20, babel-traverse@^6.18.0, babel-traverse@^6.24.1, babel-traverse@^6.26.0:
     version "6.26.0"
     resolved "https://registry.yarnpkg.com/babel-traverse/-/babel-traverse-6.26.0.tgz#46a9cbd7edcc62c8e5c064e2d2d8d0f4035766ee"
     dependencies:
@@ -962,7 +1055,7 @@ Lockfile:
       invariant "^2.2.2"
       lodash "^4.17.4"
   
-  babel-types@^6.18.0, babel-types@^6.19.0, babel-types@^6.24.1, babel-types@^6.26.0:
+  babel-types@^6.0.19, babel-types@^6.18.0, babel-types@^6.19.0, babel-types@^6.24.1, babel-types@^6.26.0:
     version "6.26.0"
     resolved "https://registry.yarnpkg.com/babel-types/-/babel-types-6.26.0.tgz#a3b073f94ab49eb6fa55cd65227a334380632497"
     dependencies:
@@ -971,13 +1064,17 @@ Lockfile:
       lodash "^4.17.4"
       to-fast-properties "^1.0.3"
   
-  babylon@^6.18.0:
+  babylon@^6.0.18, babylon@^6.18.0:
     version "6.18.0"
     resolved "https://registry.yarnpkg.com/babylon/-/babylon-6.18.0.tgz#af2f3b88fa6f5c1e4c634d1a0f8eac4f55b395e3"
   
   balanced-match@^1.0.0:
     version "1.0.0"
     resolved "https://registry.yarnpkg.com/balanced-match/-/balanced-match-1.0.0.tgz#89b4d199ab2bee49de164ea02b89ce462d71b767"
+  
+  base-64@^0.1.0:
+    version "0.1.0"
+    resolved "https://registry.yarnpkg.com/base-64/-/base-64-0.1.0.tgz#780a99c84e7d600260361511c4877613bf24f6bb"
   
   base64-js@0.0.8:
     version "0.0.8"
@@ -1032,6 +1129,10 @@ Lockfile:
   big-integer@^1.6.7:
     version "1.6.27"
     resolved "https://registry.yarnpkg.com/big-integer/-/big-integer-1.6.27.tgz#8e56c6f8b2dd6c4fe8d32102b83d4f25868e4b3a"
+  
+  binary-extensions@^1.0.0:
+    version "1.11.0"
+    resolved "https://registry.yarnpkg.com/binary-extensions/-/binary-extensions-1.11.0.tgz#46aa1751fb6a2f93ee5e689bb1087d4b14c6c205"
   
   block-stream@*:
     version "0.0.9"
@@ -1222,6 +1323,25 @@ Lockfile:
     version "0.4.2"
     resolved "https://registry.yarnpkg.com/chardet/-/chardet-0.4.2.tgz#b5473b33dc97c424e5d98dc87d55d4d8a29c8bf2"
   
+  chokidar@^1.6.1:
+    version "1.7.0"
+    resolved "https://registry.yarnpkg.com/chokidar/-/chokidar-1.7.0.tgz#798e689778151c8076b4b360e5edd28cda2bb468"
+    dependencies:
+      anymatch "^1.3.0"
+      async-each "^1.0.0"
+      glob-parent "^2.0.0"
+      inherits "^2.0.1"
+      is-binary-path "^1.0.0"
+      is-glob "^2.0.0"
+      path-is-absolute "^1.0.0"
+      readdirp "^2.0.0"
+    optionalDependencies:
+      fsevents "^1.0.0"
+  
+  chownr@^1.0.1:
+    version "1.0.1"
+    resolved "https://registry.yarnpkg.com/chownr/-/chownr-1.0.1.tgz#e2a75042a9551908bebd25b8523d5f9769d79181"
+  
   ci-info@^1.0.0:
     version "1.1.3"
     resolved "https://registry.yarnpkg.com/ci-info/-/ci-info-1.1.3.tgz#710193264bb05c77b8c90d02f5aaf22216a667b2"
@@ -1337,7 +1457,7 @@ Lockfile:
     dependencies:
       delayed-stream "~1.0.0"
   
-  commander@^2.9.0:
+  commander@^2.11.0, commander@^2.9.0:
     version "2.15.1"
     resolved "https://registry.yarnpkg.com/commander/-/commander-2.15.1.tgz#df46e867d0fc2aec66a34662b406a9ccafff5b0f"
   
@@ -1553,7 +1673,7 @@ Lockfile:
     version "2.2.0"
     resolved "https://registry.yarnpkg.com/dateformat/-/dateformat-2.2.0.tgz#4065e2013cf9fb916ddfd82efb506ad4c6769062"
   
-  debug@2.6.9, debug@^2.2.0, debug@^2.3.3, debug@^2.6.8:
+  debug@2.6.9, debug@^2.1.2, debug@^2.2.0, debug@^2.3.3, debug@^2.6.8:
     version "2.6.9"
     resolved "https://registry.yarnpkg.com/debug/-/debug-2.6.9.tgz#5d128515df134ff327e90a4c93f4e077a536341f"
     dependencies:
@@ -2137,9 +2257,26 @@ Lockfile:
       jsonfile "^2.1.0"
       klaw "^1.0.0"
   
+  fs-minipass@^1.2.5:
+    version "1.2.5"
+    resolved "https://registry.yarnpkg.com/fs-minipass/-/fs-minipass-1.2.5.tgz#06c277218454ec288df77ada54a03b8702aacb9d"
+    dependencies:
+      minipass "^2.2.1"
+  
+  fs-readdir-recursive@^1.0.0:
+    version "1.1.0"
+    resolved "https://registry.yarnpkg.com/fs-readdir-recursive/-/fs-readdir-recursive-1.1.0.tgz#e32fc030a2ccee44a6b5371308da54be0b397d27"
+  
   fs.realpath@^1.0.0:
     version "1.0.0"
     resolved "https://registry.yarnpkg.com/fs.realpath/-/fs.realpath-1.0.0.tgz#1504ad2523158caa40db4a2787cb01411994ea4f"
+  
+  fsevents@^1.0.0:
+    version "1.2.3"
+    resolved "https://registry.yarnpkg.com/fsevents/-/fsevents-1.2.3.tgz#08292982e7059f6674c93d8b829c1e8604979ac0"
+    dependencies:
+      nan "^2.9.2"
+      node-pre-gyp "^0.9.0"
   
   fsevents@^1.1.1:
     version "1.1.3"
@@ -2251,7 +2388,7 @@ Lockfile:
     dependencies:
       sparkles "^1.0.0"
   
-  graceful-fs@^4.1.11, graceful-fs@^4.1.2, graceful-fs@^4.1.3, graceful-fs@^4.1.6, graceful-fs@^4.1.9:
+  graceful-fs@^4.1.11, graceful-fs@^4.1.2, graceful-fs@^4.1.3, graceful-fs@^4.1.4, graceful-fs@^4.1.6, graceful-fs@^4.1.9:
     version "4.1.11"
     resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.1.11.tgz#0e8bdfe4d1ddb8854d64e04ea7c00e2a026e5658"
   
@@ -2459,6 +2596,18 @@ Lockfile:
     version "0.4.19"
     resolved "https://registry.yarnpkg.com/iconv-lite/-/iconv-lite-0.4.19.tgz#f7468f60135f5e5dad3399c0a81be9a1603a082b"
   
+  iconv-lite@^0.4.4:
+    version "0.4.21"
+    resolved "https://registry.yarnpkg.com/iconv-lite/-/iconv-lite-0.4.21.tgz#c47f8733d02171189ebc4a400f3218d348094798"
+    dependencies:
+      safer-buffer "^2.1.0"
+  
+  ignore-walk@^3.0.1:
+    version "3.0.1"
+    resolved "https://registry.yarnpkg.com/ignore-walk/-/ignore-walk-3.0.1.tgz#a83e62e7d272ac0e3b551aaa82831a19b69f82f8"
+    dependencies:
+      minimatch "^3.0.4"
+  
   image-size@^0.6.0:
     version "0.6.2"
     resolved "https://registry.yarnpkg.com/image-size/-/image-size-0.6.2.tgz#8ee316d4298b028b965091b673d5f1537adee5b4"
@@ -2485,7 +2634,7 @@ Lockfile:
       once "^1.3.0"
       wrappy "1"
   
-  inherits@2, inherits@^2.0.3, inherits@~2.0.0, inherits@~2.0.1, inherits@~2.0.3:
+  inherits@2, inherits@^2.0.1, inherits@^2.0.3, inherits@~2.0.0, inherits@~2.0.1, inherits@~2.0.3:
     version "2.0.3"
     resolved "https://registry.yarnpkg.com/inherits/-/inherits-2.0.3.tgz#633c2c83e3da42a502f52466022480f4208261de"
   
@@ -2559,6 +2708,12 @@ Lockfile:
   is-arrayish@^0.3.1:
     version "0.3.1"
     resolved "https://registry.yarnpkg.com/is-arrayish/-/is-arrayish-0.3.1.tgz#c2dfc386abaa0c3e33c48db3fe87059e69065efd"
+  
+  is-binary-path@^1.0.0:
+    version "1.0.1"
+    resolved "https://registry.yarnpkg.com/is-binary-path/-/is-binary-path-1.0.1.tgz#75f16642b480f187a711c814161fd3a4a7655898"
+    dependencies:
+      binary-extensions "^1.0.0"
   
   is-buffer@^1.1.5:
     version "1.1.6"
@@ -3338,6 +3493,10 @@ Lockfile:
     version "3.0.1"
     resolved "https://registry.yarnpkg.com/lodash._root/-/lodash._root-3.0.1.tgz#fba1c4524c19ee9a5f8136b4609f017cf4ded692"
   
+  lodash.assign@^4.0.0:
+    version "4.2.0"
+    resolved "https://registry.yarnpkg.com/lodash.assign/-/lodash.assign-4.2.0.tgz#0d99f3ccd7a6d261d19bdaeb9245005d285808e7"
+  
   lodash.escape@^3.0.0:
     version "3.2.0"
     resolved "https://registry.yarnpkg.com/lodash.escape/-/lodash.escape-3.2.0.tgz#995ee0dc18c1b48cc92effae71a10aab5b487698"
@@ -3383,6 +3542,10 @@ Lockfile:
   lodash.padstart@^4.1.0:
     version "4.6.1"
     resolved "https://registry.yarnpkg.com/lodash.padstart/-/lodash.padstart-4.6.1.tgz#d2e3eebff0d9d39ad50f5cbd1b52a7bce6bb611b"
+  
+  lodash.pickby@^4.0.0:
+    version "4.6.0"
+    resolved "https://registry.yarnpkg.com/lodash.pickby/-/lodash.pickby-4.6.0.tgz#7dea21d8c18d7703a27c704c15d3b84a67e33aff"
   
   lodash.restparam@^3.0.0:
     version "3.6.1"
@@ -3584,7 +3747,7 @@ Lockfile:
       xpipe "^1.0.5"
       yargs "^9.0.0"
   
-  micromatch@^2.3.11:
+  micromatch@^2.1.5, micromatch@^2.3.11:
     version "2.3.11"
     resolved "https://registry.yarnpkg.com/micromatch/-/micromatch-2.3.11.tgz#86677c97d1720b363431d04d0d15293bd38c1565"
     dependencies:
@@ -3658,7 +3821,7 @@ Lockfile:
     dependencies:
       dom-walk "^0.1.0"
   
-  minimatch@^3.0.0, minimatch@^3.0.3, minimatch@^3.0.4:
+  minimatch@^3.0.0, minimatch@^3.0.2, minimatch@^3.0.3, minimatch@^3.0.4:
     version "3.0.4"
     resolved "https://registry.yarnpkg.com/minimatch/-/minimatch-3.0.4.tgz#5166e286457f03306064be5497e8dbb0c3d32083"
     dependencies:
@@ -3676,6 +3839,19 @@ Lockfile:
     version "0.0.10"
     resolved "https://registry.yarnpkg.com/minimist/-/minimist-0.0.10.tgz#de3f98543dbf96082be48ad1a0c7cda836301dcf"
   
+  minipass@^2.2.1, minipass@^2.2.4:
+    version "2.2.4"
+    resolved "https://registry.yarnpkg.com/minipass/-/minipass-2.2.4.tgz#03c824d84551ec38a8d1bb5bc350a5a30a354a40"
+    dependencies:
+      safe-buffer "^5.1.1"
+      yallist "^3.0.0"
+  
+  minizlib@^1.1.0:
+    version "1.1.0"
+    resolved "https://registry.yarnpkg.com/minizlib/-/minizlib-1.1.0.tgz#11e13658ce46bc3a70a267aac58359d1e0c29ceb"
+    dependencies:
+      minipass "^2.2.1"
+  
   mixin-deep@^1.2.0:
     version "1.3.1"
     resolved "https://registry.yarnpkg.com/mixin-deep/-/mixin-deep-1.3.1.tgz#a49e7268dce1a0d9698e45326c5626df3543d0fe"
@@ -3683,7 +3859,7 @@ Lockfile:
       for-in "^1.0.2"
       is-extendable "^1.0.1"
   
-  "mkdirp@>=0.5 0", mkdirp@^0.5.1:
+  "mkdirp@>=0.5 0", mkdirp@^0.5.0, mkdirp@^0.5.1:
     version "0.5.1"
     resolved "https://registry.yarnpkg.com/mkdirp/-/mkdirp-0.5.1.tgz#30057438eac6cf7f8c4767f38648d6697d75c903"
     dependencies:
@@ -3728,7 +3904,7 @@ Lockfile:
     version "0.0.7"
     resolved "https://registry.yarnpkg.com/mute-stream/-/mute-stream-0.0.7.tgz#3075ce93bc21b8fab43e1bc4da7e8115ed1e7bab"
   
-  nan@^2.3.0:
+  nan@^2.3.0, nan@^2.9.2:
     version "2.10.0"
     resolved "https://registry.yarnpkg.com/nan/-/nan-2.10.0.tgz#96d0cd610ebd58d4b4de9cc0c6828cda99c7548f"
   
@@ -3752,6 +3928,14 @@ Lockfile:
   natural-compare@^1.4.0:
     version "1.4.0"
     resolved "https://registry.yarnpkg.com/natural-compare/-/natural-compare-1.4.0.tgz#4abebfeed7541f2c27acfb29bdbbd15c8d5ba4f7"
+  
+  needle@^2.2.0:
+    version "2.2.1"
+    resolved "https://registry.yarnpkg.com/needle/-/needle-2.2.1.tgz#b5e325bd3aae8c2678902fa296f729455d1d3a7d"
+    dependencies:
+      debug "^2.1.2"
+      iconv-lite "^0.4.4"
+      sax "^1.2.4"
   
   negotiator@0.5.3:
     version "0.5.3"
@@ -3804,6 +3988,21 @@ Lockfile:
       tar "^2.2.1"
       tar-pack "^3.4.0"
   
+  node-pre-gyp@^0.9.0:
+    version "0.9.1"
+    resolved "https://registry.yarnpkg.com/node-pre-gyp/-/node-pre-gyp-0.9.1.tgz#f11c07516dd92f87199dbc7e1838eab7cd56c9e0"
+    dependencies:
+      detect-libc "^1.0.2"
+      mkdirp "^0.5.1"
+      needle "^2.2.0"
+      nopt "^4.0.1"
+      npm-packlist "^1.1.6"
+      npmlog "^4.0.2"
+      rc "^1.1.7"
+      rimraf "^2.6.1"
+      semver "^5.3.0"
+      tar "^4"
+  
   noop-fn@^1.0.0:
     version "1.0.0"
     resolved "https://registry.yarnpkg.com/noop-fn/-/noop-fn-1.0.0.tgz#5f33d47f13d2150df93e0cb036699e982f78ffbf"
@@ -3824,11 +4023,22 @@ Lockfile:
       semver "2 || 3 || 4 || 5"
       validate-npm-package-license "^3.0.1"
   
-  normalize-path@^2.0.1, normalize-path@^2.1.1:
+  normalize-path@^2.0.0, normalize-path@^2.0.1, normalize-path@^2.1.1:
     version "2.1.1"
     resolved "https://registry.yarnpkg.com/normalize-path/-/normalize-path-2.1.1.tgz#1ab28b556e198363a8c1a6f7e6fa20137fe6aed9"
     dependencies:
       remove-trailing-separator "^1.0.1"
+  
+  npm-bundled@^1.0.1:
+    version "1.0.3"
+    resolved "https://registry.yarnpkg.com/npm-bundled/-/npm-bundled-1.0.3.tgz#7e71703d973af3370a9591bafe3a63aca0be2308"
+  
+  npm-packlist@^1.1.6:
+    version "1.1.10"
+    resolved "https://registry.yarnpkg.com/npm-packlist/-/npm-packlist-1.1.10.tgz#1039db9e985727e464df066f4cf0ab6ef85c398a"
+    dependencies:
+      ignore-walk "^3.0.1"
+      npm-bundled "^1.0.1"
   
   npm-run-path@^2.0.0:
     version "2.0.2"
@@ -4008,6 +4218,14 @@ Lockfile:
     dependencies:
       os-homedir "^1.0.0"
       os-tmpdir "^1.0.0"
+  
+  output-file-sync@^1.1.2:
+    version "1.1.2"
+    resolved "https://registry.yarnpkg.com/output-file-sync/-/output-file-sync-1.1.2.tgz#d0a33eefe61a205facb90092e826598d5245ce76"
+    dependencies:
+      graceful-fs "^4.1.4"
+      mkdirp "^0.5.1"
+      object-assign "^4.1.0"
   
   p-finally@^1.0.0:
     version "1.0.0"
@@ -4294,6 +4512,15 @@ Lockfile:
     version "2.0.0-beta.3"
     resolved "https://registry.yarnpkg.com/react-native-branch/-/react-native-branch-2.0.0-beta.3.tgz#2167af86bbc9f964bd45bd5f37684e5b54965e32"
   
+  react-native-chart@^1.0.8-beta:
+    version "1.0.8-beta"
+    resolved "https://registry.yarnpkg.com/react-native-chart/-/react-native-chart-1.0.8-beta.tgz#c34b50ffe7f2acd6f519d614a134a7cd29135766"
+    dependencies:
+      babel-cli "^6.10.1"
+      babel-eslint "^6.0.0"
+      babel-plugin-transform-flow-strip-types "^6.8.0"
+      babel-preset-react-native "^1.5.3"
+  
   react-native-dismiss-keyboard@1.0.0:
     version "1.0.0"
     resolved "https://registry.yarnpkg.com/react-native-dismiss-keyboard/-/react-native-dismiss-keyboard-1.0.0.tgz#32886242b3f2317e121f3aeb9b0a585e2b879b49"
@@ -4310,14 +4537,15 @@ Lockfile:
     dependencies:
       react-native-dismiss-keyboard "1.0.0"
   
-  react-native-elements@^0.19.0:
-    version "0.19.0"
-    resolved "https://registry.yarnpkg.com/react-native-elements/-/react-native-elements-0.19.0.tgz#737c5198bf7487f9986e2023826cd0bd7a500366"
+  react-native-elements@^1.0.0-beta4:
+    version "1.0.0-beta4"
+    resolved "https://registry.yarnpkg.com/react-native-elements/-/react-native-elements-1.0.0-beta4.tgz#53329ac450cbb6ac2dade45257ffa9debe26e1ad"
     dependencies:
       lodash.isempty "^4.4.0"
       lodash.times "^4.3.2"
       opencollective "^1.0.3"
       prop-types "^15.5.8"
+      react-native-touchable-scale "2.0.0"
   
   react-native-gesture-handler@1.0.0-alpha.39:
     version "1.0.0-alpha.39"
@@ -4326,6 +4554,10 @@ Lockfile:
       hoist-non-react-statics "^2.3.1"
       invariant "^2.2.2"
       prop-types "^15.5.10"
+  
+  react-native-list-popover@^1.1.1:
+    version "1.1.1"
+    resolved "https://registry.yarnpkg.com/react-native-list-popover/-/react-native-list-popover-1.1.1.tgz#cd8f7e8b898bb2955641190fc26efdf862fde91b"
   
   react-native-maps@0.19.0:
     version "0.19.0"
@@ -4357,6 +4589,12 @@ Lockfile:
   "react-native-tab-view@github:react-navigation/react-native-tab-view":
     version "0.0.74"
     resolved "https://codeload.github.com/react-navigation/react-native-tab-view/tar.gz/36ebd834d78b841fc19778c966465d02fd1213bb"
+    dependencies:
+      prop-types "^15.6.0"
+  
+  react-native-touchable-scale@2.0.0:
+    version "2.0.0"
+    resolved "https://registry.yarnpkg.com/react-native-touchable-scale/-/react-native-touchable-scale-2.0.0.tgz#13a83a9423e46049cad3e3cc306eba2130883cb1"
     dependencies:
       prop-types "^15.6.0"
   
@@ -4517,6 +4755,18 @@ Lockfile:
       string_decoder "~1.0.3"
       util-deprecate "~1.0.1"
   
+  readable-stream@^2.0.2:
+    version "2.3.6"
+    resolved "https://registry.yarnpkg.com/readable-stream/-/readable-stream-2.3.6.tgz#b11c27d88b8ff1fbe070643cf94b0c79ae1b0aaf"
+    dependencies:
+      core-util-is "~1.0.0"
+      inherits "~2.0.3"
+      isarray "~1.0.0"
+      process-nextick-args "~2.0.0"
+      safe-buffer "~5.1.1"
+      string_decoder "~1.1.1"
+      util-deprecate "~1.0.1"
+  
   readable-stream@~1.1.8, readable-stream@~1.1.9:
     version "1.1.14"
     resolved "https://registry.yarnpkg.com/readable-stream/-/readable-stream-1.1.14.tgz#7cf4c54ef648e3813084c636dd2079e166c081d9"
@@ -4525,6 +4775,15 @@ Lockfile:
       inherits "~2.0.1"
       isarray "0.0.1"
       string_decoder "~0.10.x"
+  
+  readdirp@^2.0.0:
+    version "2.1.0"
+    resolved "https://registry.yarnpkg.com/readdirp/-/readdirp-2.1.0.tgz#4ed0ad060df3073300c48440373f72d1cc642d78"
+    dependencies:
+      graceful-fs "^4.1.2"
+      minimatch "^3.0.2"
+      readable-stream "^2.0.2"
+      set-immediate-shim "^1.0.1"
   
   realpath-native@^1.0.0:
     version "1.0.0"
@@ -4536,7 +4795,7 @@ Lockfile:
     version "1.3.3"
     resolved "https://registry.yarnpkg.com/regenerate/-/regenerate-1.3.3.tgz#0c336d3980553d755c39b586ae3b20aa49c82b7f"
   
-  regenerator-runtime@^0.10.0:
+  regenerator-runtime@^0.10.0, regenerator-runtime@^0.10.5:
     version "0.10.5"
     resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.10.5.tgz#336c3efc1220adcedda2c9fab67b5a7955a33658"
   
@@ -4777,6 +5036,10 @@ Lockfile:
     dependencies:
       ret "~0.1.10"
   
+  safer-buffer@^2.1.0:
+    version "2.1.2"
+    resolved "https://registry.yarnpkg.com/safer-buffer/-/safer-buffer-2.1.2.tgz#44fa161b0187b9549dd84bb91802f9bd8385cd6a"
+  
   sane@^2.0.0:
     version "2.5.0"
     resolved "https://registry.yarnpkg.com/sane/-/sane-2.5.0.tgz#6359cd676f5efd9988b264d8ce3b827dd6b27bec"
@@ -4856,6 +5119,10 @@ Lockfile:
   set-blocking@^2.0.0, set-blocking@~2.0.0:
     version "2.0.0"
     resolved "https://registry.yarnpkg.com/set-blocking/-/set-blocking-2.0.0.tgz#045f9782d011ae9a6803ddd382b24392b3d890f7"
+  
+  set-immediate-shim@^1.0.1:
+    version "1.0.1"
+    resolved "https://registry.yarnpkg.com/set-immediate-shim/-/set-immediate-shim-1.0.1.tgz#4b2b1b27eb808a9f8dcc481a58e5e56f599f3f61"
   
   set-value@^0.4.3:
     version "0.4.3"
@@ -5130,6 +5397,12 @@ Lockfile:
     dependencies:
       safe-buffer "~5.1.0"
   
+  string_decoder@~1.1.1:
+    version "1.1.1"
+    resolved "https://registry.yarnpkg.com/string_decoder/-/string_decoder-1.1.1.tgz#9cf1611ba62685d7030ae9e4ba34149c3af03fc8"
+    dependencies:
+      safe-buffer "~5.1.0"
+  
   stringstream@~0.0.4, stringstream@~0.0.5:
     version "0.0.5"
     resolved "https://registry.yarnpkg.com/stringstream/-/stringstream-0.0.5.tgz#4e484cd4de5a0bbbee18e46307710a8a81621878"
@@ -5204,6 +5477,18 @@ Lockfile:
       block-stream "*"
       fstream "^1.0.2"
       inherits "2"
+  
+  tar@^4:
+    version "4.4.1"
+    resolved "https://registry.yarnpkg.com/tar/-/tar-4.4.1.tgz#b25d5a8470c976fd7a9a8a350f42c59e9fa81749"
+    dependencies:
+      chownr "^1.0.1"
+      fs-minipass "^1.2.5"
+      minipass "^2.2.4"
+      minizlib "^1.1.0"
+      mkdirp "^0.5.0"
+      safe-buffer "^5.1.1"
+      yallist "^3.0.2"
   
   temp@0.8.3:
     version "0.8.3"
@@ -5406,6 +5691,10 @@ Lockfile:
     dependencies:
       kind-of "^6.0.2"
   
+  user-home@^1.1.1:
+    version "1.1.1"
+    resolved "https://registry.yarnpkg.com/user-home/-/user-home-1.1.1.tgz#2b5be23a32b63a7c9deb8d0f28d485724a3df190"
+  
   util-deprecate@1.0.2, util-deprecate@~1.0.1:
     version "1.0.2"
     resolved "https://registry.yarnpkg.com/util-deprecate/-/util-deprecate-1.0.2.tgz#450d4dc9fa70de732762fbd2d4a28981419a0ccf"
@@ -5436,6 +5725,12 @@ Lockfile:
   uuid@^3.0.0, uuid@^3.1.0:
     version "3.2.1"
     resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.2.1.tgz#12c528bb9d58d0b9265d9a2f6f0fe8be17ff1f14"
+  
+  v8flags@^2.1.1:
+    version "2.1.1"
+    resolved "https://registry.yarnpkg.com/v8flags/-/v8flags-2.1.1.tgz#aab1a1fa30d45f88dd321148875ac02c0b55e5b4"
+    dependencies:
+      user-home "^1.1.1"
   
   validate-npm-package-license@^3.0.1:
     version "3.0.3"
@@ -5661,6 +5956,10 @@ Lockfile:
     version "2.1.2"
     resolved "https://registry.yarnpkg.com/yallist/-/yallist-2.1.2.tgz#1c11f9218f076089a47dd512f93c6699a6a81d52"
   
+  yallist@^3.0.0, yallist@^3.0.2:
+    version "3.0.2"
+    resolved "https://registry.yarnpkg.com/yallist/-/yallist-3.0.2.tgz#8452b4bb7e83c7c188d8041c1a837c773d6d8bb9"
+  
   yargs-parser@^7.0.0:
     version "7.0.0"
     resolved "https://registry.yarnpkg.com/yargs-parser/-/yargs-parser-7.0.0.tgz#8d0ac42f16ea55debd332caf4c4038b3e3f5dfd9"
@@ -5736,139 +6035,10 @@ Lockfile:
       window-size "0.1.0"
 
 Trace: 
-  Error: /Users/jshim/Documents/github-instagram/node_modules/base64: Command failed.
-  Exit code: 1
-  Command: sh
-  Arguments: -c node-gyp rebuild
-  Directory: /Users/jshim/Documents/github-instagram/node_modules/base64
-  Output:
-  gyp info it worked if it ends with ok
-  gyp info using node-gyp@3.6.2
-  gyp info using node@9.9.0 | darwin | x64
-  gyp info spawn /usr/bin/python
-  gyp info spawn args [ '/usr/local/Cellar/node/9.9.0/libexec/lib/node_modules/npm/node_modules/node-gyp/gyp/gyp_main.py',
-  gyp info spawn args   'binding.gyp',
-  gyp info spawn args   '-f',
-  gyp info spawn args   'make',
-  gyp info spawn args   '-I',
-  gyp info spawn args   '/Users/jshim/Documents/github-instagram/node_modules/base64/build/config.gypi',
-  gyp info spawn args   '-I',
-  gyp info spawn args   '/usr/local/Cellar/node/9.9.0/libexec/lib/node_modules/npm/node_modules/node-gyp/addon.gypi',
-  gyp info spawn args   '-I',
-  gyp info spawn args   '/Users/jshim/.node-gyp/9.9.0/include/node/common.gypi',
-  gyp info spawn args   '-Dlibrary=shared_library',
-  gyp info spawn args   '-Dvisibility=default',
-  gyp info spawn args   '-Dnode_root_dir=/Users/jshim/.node-gyp/9.9.0',
-  gyp info spawn args   '-Dnode_gyp_dir=/usr/local/Cellar/node/9.9.0/libexec/lib/node_modules/npm/node_modules/node-gyp',
-  gyp info spawn args   '-Dnode_lib_file=/Users/jshim/.node-gyp/9.9.0/<(target_arch)/node.lib',
-  gyp info spawn args   '-Dmodule_root_dir=/Users/jshim/Documents/github-instagram/node_modules/base64',
-  gyp info spawn args   '-Dnode_engine=v8',
-  gyp info spawn args   '--depth=.',
-  gyp info spawn args   '--no-parallel',
-  gyp info spawn args   '--generator-output',
-  gyp info spawn args   'build',
-  gyp info spawn args   '-Goutput_dir=.' ]
-  gyp info spawn make
-  gyp info spawn args [ 'BUILDTYPE=Release', '-C', 'build' ]
-    CXX(target) Release/obj.target/base64/base64.o
-  ../base64.cc:13:17: error: calling a protected constructor of class 'v8::HandleScope'
-      HandleScope scope;
-                  ^
-  /Users/jshim/.node-gyp/9.9.0/include/node/v8.h:876:13: note: declared protected here
-    V8_INLINE HandleScope() {}
-              ^
-  ../base64.cc:14:52: error: no member named 'New' in 'v8::String'
-      return ThrowException(Exception::Error(String::New(msg)));
-                                             ~~~~~~~~^
-  ../base64.cc:122:29: error: unknown type name 'Arguments'; did you mean 'v8::internal::Arguments'?
-  base64_encode_binding(const Arguments &args)
-                              ^~~~~~~~~
-                              v8::internal::Arguments
-  /Users/jshim/.node-gyp/9.9.0/include/node/v8.h:142:7: note: 'v8::internal::Arguments' declared here
-  class Arguments;
-        ^
-  ../base64.cc:124:17: error: calling a protected constructor of class 'v8::HandleScope'
-      HandleScope scope;
-                  ^
-  /Users/jshim/.node-gyp/9.9.0/include/node/v8.h:876:13: note: declared protected here
-    V8_INLINE HandleScope() {}
-              ^
-  ../base64.cc:127:13: error: member access into incomplete type 'const v8::internal::Arguments'
-      if (args.Length() != 1)
-              ^
-  /Users/jshim/.node-gyp/9.9.0/include/node/v8.h:142:7: note: forward declaration of 'v8::internal::Arguments'
-  class Arguments;
-        ^
-  ../base64.cc:130:33: error: type 'const v8::internal::Arguments' does not provide a subscript operator
-      if (Buffer::HasInstance(args[0])) {
-                              ~~~~^~
-  ../base64.cc:131:45: error: type 'const v8::internal::Arguments' does not provide a subscript operator
-          v8::Handle<v8::Object> buffer = args[0]->ToObject();
-                                          ~~~~^~
-  ../base64.cc:137:18: error: type 'const v8::internal::Arguments' does not provide a subscript operator
-      else if (args[0]->IsString()) {
-               ~~~~^~
-  ../base64.cc:138:38: error: type 'const v8::internal::Arguments' does not provide a subscript operator
-          String::Utf8Value v8str (args[0]->ToString());
-                                   ~~~~^~
-  ../base64.cc:144:33: error: no member named 'New' in 'v8::String'
-      Local<String> ret = String::New(str);
-                          ~~~~~~~~^
-  ../base64.cc:146:18: error: no member named 'Close' in 'v8::HandleScope'
-      return scope.Close(ret);
-             ~~~~~ ^
-  ../base64.cc:150:29: error: unknown type name 'Arguments'; did you mean 'v8::internal::Arguments'?
-  base64_decode_binding(const Arguments &args)
-                              ^~~~~~~~~
-                              v8::internal::Arguments
-  /Users/jshim/.node-gyp/9.9.0/include/node/v8.h:142:7: note: 'v8::internal::Arguments' declared here
-  class Arguments;
-        ^
-  ../base64.cc:152:17: error: calling a protected constructor of class 'v8::HandleScope'
-      HandleScope scope;
-                  ^
-  /Users/jshim/.node-gyp/9.9.0/include/node/v8.h:876:13: note: declared protected here
-    V8_INLINE HandleScope() {}
-              ^
-  ../base64.cc:155:13: error: member access into incomplete type 'const v8::internal::Arguments'
-      if (args.Length() < 1)
-              ^
-  /Users/jshim/.node-gyp/9.9.0/include/node/v8.h:142:7: note: forward declaration of 'v8::internal::Arguments'
-  class Arguments;
-        ^
-  ../base64.cc:160:33: error: type 'const v8::internal::Arguments' does not provide a subscript operator
-      if (Buffer::HasInstance(args[0])) { // buffer
-                              ~~~~^~
-  ../base64.cc:161:45: error: type 'const v8::internal::Arguments' does not provide a subscript operator
-          v8::Handle<v8::Object> buffer = args[0]->ToObject();
-                                          ~~~~^~
-  ../base64.cc:170:27: error: expected ';' after expression
-          String::AsciiValue b64data(args[0]->ToString());
-                            ^
-                            ;
-  ../base64.cc:170:17: error: no member named 'AsciiValue' in 'v8::String'
-          String::AsciiValue b64data(args[0]->ToString());
-          ~~~~~~~~^
-  ../base64.cc:170:40: error: type 'const v8::internal::Arguments' does not provide a subscript operator
-          String::AsciiValue b64data(args[0]->ToString());
-                                     ~~~~^~
-  fatal error: too many errors emitted, stopping now [-ferror-limit=]
-  20 errors generated.
-  make: *** [Release/obj.target/base64/base64.o] Error 1
-  gyp ERR! build error 
-  gyp ERR! stack Error: `make` failed with exit code: 2
-  gyp ERR! stack     at ChildProcess.onExit (/usr/local/Cellar/node/9.9.0/libexec/lib/node_modules/npm/node_modules/node-gyp/lib/build.js:258:23)
-  gyp ERR! stack     at ChildProcess.emit (events.js:180:13)
-  gyp ERR! stack     at Process.ChildProcess._handle.onexit (internal/child_process.js:209:12)
-  gyp ERR! System Darwin 17.4.0
-  gyp ERR! command "/usr/local/Cellar/node/9.9.0/bin/node" "/usr/local/Cellar/node/9.9.0/libexec/lib/node_modules/npm/node_modules/node-gyp/bin/node-gyp.js" "rebuild"
-  gyp ERR! cwd /Users/jshim/Documents/github-instagram/node_modules/base64
-  gyp ERR! node -v v9.9.0
-  gyp ERR! node-gyp -v v3.6.2
-  gyp ERR! not ok
-      at ProcessTermError.MessageError (/usr/local/Cellar/yarn/1.5.1_1/libexec/lib/cli.js:186:110)
-      at new ProcessTermError (/usr/local/Cellar/yarn/1.5.1_1/libexec/lib/cli.js:226:113)
-      at ChildProcess.<anonymous> (/usr/local/Cellar/yarn/1.5.1_1/libexec/lib/cli.js:30281:17)
-      at ChildProcess.emit (events.js:180:13)
-      at maybeClose (internal/child_process.js:936:16)
-      at Process.ChildProcess._handle.onexit (internal/child_process.js:220:5)
+  Error: `install` has been replaced with `add` to add new dependencies. Run "yarn add victory-native" instead.
+      at new MessageError (/usr/local/Cellar/yarn/1.5.1_1/libexec/lib/cli.js:186:110)
+      at Object.<anonymous> (/usr/local/Cellar/yarn/1.5.1_1/libexec/lib/cli.js:21987:13)
+      at Generator.next (<anonymous>)
+      at step (/usr/local/Cellar/yarn/1.5.1_1/libexec/lib/cli.js:98:30)
+      at /usr/local/Cellar/yarn/1.5.1_1/libexec/lib/cli.js:109:13
+      at <anonymous>

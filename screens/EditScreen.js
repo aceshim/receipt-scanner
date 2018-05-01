@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableHighlight, Picker, Keyboard, StatusBar, ScrollView, DatePickerIOS, StyleSheet, Text, View, Image, KeyboardAvoidingView } from 'react-native';
+import { ActionSheetIOS, TouchableHighlight, Picker, Keyboard, StatusBar, ScrollView, DatePickerIOS, StyleSheet, Text, View, Image, KeyboardAvoidingView } from 'react-native';
 import { Header, Input, Icon, Card, ListItem, Button } from 'react-native-elements';
 import {
   StackNavigator,
@@ -22,6 +22,11 @@ export default class EditPage extends React.Component {
       delete: false,
       selectedCategory: 'Default',
       datePickerVisible: false,
+      company: '',
+      amount: '',
+      comment: '',
+      category: 'Default',
+      loaded: false,
     };
 
     this._setDate = this._setDate.bind(this);
@@ -33,10 +38,10 @@ export default class EditPage extends React.Component {
   }
 
   componentDidMount(){
-    console.log(this.props);
-    this.setState({
-      chosenDate: new Date(),
-    })
+
+  }
+  componentWillMount(){
+
   }
   _toReadableDate(date){
     return date.toISOString().slice(0,10);
@@ -82,15 +87,16 @@ export default class EditPage extends React.Component {
     this._submitAmountEditing();
     this._submitCompanyEditing();
     var { errorCompany, errorDate, errorAmount } = this.state;
-    console.log('here');
-    if (!errorCompany && !errorDate && !errorAmount){
-      console.log('Ready to proceed');
+    if (!errorCompany && !errorAmount){
+      this.props.navigation.navigate('List', {add:true, data: this.state})
     }
   }
 
   _onPressConfirmDelete(){
-    console.log('Ready to cancel this entry')
+    console.log(this.props.navigation)
+    this.props.navigation.navigate('List', {remove:true, data: this.state})
   }
+
   _selectDate(){
     Keyboard.dismiss();
     this.setState({
@@ -120,11 +126,57 @@ export default class EditPage extends React.Component {
   }
 
   _goBack(){
+    Keyboard.dismiss();
     this.props.navigation.goBack();
   }
 
-  render() {
+  _cameraPressed(){
+    ActionSheetIOS.showActionSheetWithOptions({
+      options: ['Cancel', 'Take Picture', 'Use Picture From Library', 'Manually Enter'],
+      // destructiveButtonIndex: 1,
+      cancelButtonIndex: 0,
+    },
+    (buttonIndex) => {
+      if (buttonIndex === 1) {
+        console.log("Take Picture")
+        this.props.navigation.navigate('Add');
+      } else if (buttonIndex === 2){
+        console.log("Use Library")
+        this.props.navigation.navigate('Add');
+      } else if (buttonIndex === 3){
+        console.log("Manually Enter")
+        this.props.navigation.navigate('Add');
+      }
+    });
+  }
 
+
+  render() {
+    if (this.props.navigation.state.params){
+      const item = this.props.navigation.state.params.item;
+      if (!this.state.loaded){
+        this.setState({
+          company: item.company,
+          amount: item.balance,
+          comment: item.comment,
+          selectedCategory: item.category,
+          index: item.index,
+          loaded: true,
+        })
+      }
+    }
+    const cameraButton =
+      <View style={styles.cameraButton}>
+        <Icon
+          raised
+          reverse
+          name='plus'
+          type='material-community'
+          color='#FF5252'
+          size={24}
+          onPress={() => this._cameraPressed()}
+          />
+      </View>
     return (
       <View behavior="padding" style={styles.container}>
         <Header backgroundColor='white'
@@ -160,9 +212,14 @@ export default class EditPage extends React.Component {
           inputStyle={styles.inputStyle}
           inputContainerStyle={styles.inputContainerStyle}
           placeholder='E.g. Walmart'
+          defaultValue={this.state.company}
           onChangeText={(text)=>this.setState({company:text})}
           onEndEditing={()=>this._submitCompanyEditing()}
           onFocus={this._closeModal}/>
+          {this.state.errorCompany?
+            <Text style={styles.errorText}>
+              Cannot be blank
+            </Text>: null}
           <Input
             leftIcon={
               <View style={styles.leftIconWrapper}>
@@ -181,9 +238,14 @@ export default class EditPage extends React.Component {
             inputContainerStyle={styles.inputContainerStyle}
             keyboardType='numeric'
             placeholder='$10.00'
+            defaultValue={this.state.amount}
             onChangeText={(text)=>this.setState({amount:text})}
             onEndEditing={()=>this._submitAmountEditing()}
             onFocus={this._closeModal}/>
+          {this.state.errorAmount?
+            <Text style={styles.errorText}>
+              Cannot be blank
+            </Text>: null}
           <Input
             leftIcon={
               <View style={styles.leftIconWrapper}>
@@ -240,8 +302,10 @@ export default class EditPage extends React.Component {
             }
             inputStyle={styles.inputStyle}
             inputContainerStyle={styles.inputContainerStyle}
+            defaultValue={this.state.comment}
             placeholder='Your comment here'
             onFocus={this._closeModal}
+            onChangeText={(text)=>this.setState({comment:text})}
             />
           {this.state.delete?
             <View>
@@ -308,6 +372,7 @@ export default class EditPage extends React.Component {
             </View>:null
           }
           </View>
+          {cameraButton}
       </View>
     );
   }
@@ -454,4 +519,14 @@ const styles = StyleSheet.create({
    color: '#027afe',
    fontSize: 18,
   },
+  errorText: {
+    alignSelf:'flex-end',
+    color:'red',
+    marginRight: 20,
+  },
+  cameraButton: {
+    position: 'absolute',
+    right: 15,
+    bottom: 15,
+  }
 });

@@ -8,65 +8,37 @@ import Colors from '../constants/Colors';
 
 import HomeScreen from '../screens/HomeScreen';
 import LinksScreen from '../screens/LinksScreen';
-import SettingsScreen from '../screens/SettingsScreen';
+import AnalyzeScreen from '../screens/AnalyzeScreen';
 
-import ProfileScreen from '../screens/ProfileScreen';
-import FollowScreen from '../screens/FollowScreen';
 import CameraScreen from '../screens/CameraScreen';
-import EditReceipt from '../screens/EditReceipt';
-import ReceiptList from '../screens/ReceiptList';
+import EditReceipt from '../screens/EditScreen';
+import ReceiptList from '../screens/ListScreen';
 
-export const ProfileStack = StackNavigator({
-  Home: {
-    screen: HomeScreen,
-  },
-  Profile: {
-    screen: ProfileScreen,
-    navigationOptions: ({ navigation }) => ({
-      title: `${navigation.state.params? navigation.state.params.username:'gaearon'}`,
-      headerLeft: <HeaderBackButton onPress={() => navigation.goBack(null)} />,
-    headerRight: <Icon name='home' color='black' iconStyle={{fontSize: 28, marginRight: 10}} onPress={() => navigation.popToTop()}/> ,
-      headerStyle: { backgroundColor : 'white' }
-    }),
-  },
-  Follower: {
-    screen: FollowScreen,
-    navigationOptions: ({ navigation }) => ({
-      title: `${navigation.state.params.following? 'following':'follower'}`,
-      headerLeft: <HeaderBackButton onPress={() => navigation.goBack(null)} />,
-      headerRight: <HeaderBackButton onPress={() => navigation.popToTop()} />,
-      headerRight: <Icon name='home' color='black' iconStyle={{fontSize: 28, marginRight: 10}} onPress={() => navigation.popToTop()}/> ,
-      headerStyle: { backgroundColor : 'white' }
-    }),
-  },
-});
-
-export const PageStack = StackNavigator({
-  Home: {
-    screen: FollowScreen,
-  },
-  Camera: {
-    screen: EditReceipt,
-  },
-  Edit: {
-    screen: EditReceipt,
-  }
-})
+// export const PageStack = StackNavigator({
+//   Home: {
+//     screen: FollowScreen,
+//   },
+//   Camera: {
+//     screen: EditReceipt,
+//   },
+//   Add: {
+//     screen: EditReceipt,
+//   }
+// })
 
 export default TabNavigator(
   {
     Home: {
-      // screen: FollowScreen,
+      screen: HomeScreen,
+    },
+    List: {
       screen: ReceiptList,
     },
-    Edit: {
+    Add: {
       screen: EditReceipt,
     },
-    Camera: {
-      screen: CameraScreen,
-    },
-    Settings: {
-      screen: SettingsScreen,
+    Analyze: {
+      screen: AnalyzeScreen,
     },
   },
   {
@@ -78,31 +50,33 @@ export default TabNavigator(
         let iconSize = 24;
         let iconMarginBottom = -3;
         let iconColor = 'black';
+        let iconStyle = {};
         iconColor = focused? 'black': '#bbb';
         switch (routeName) {
           case 'Home':
             iconName = 'home';
             iconSize = 28;
             break;
-          case 'Camera':
+          case 'Add':
             iconName = 'camera';
             iconSize = 26;
             iconColor = focused? 'black': '#bbb';
             break;
-          case 'Settings':
-            iconName = focused? 'heart': 'heart-o';
+          case 'Analyze':
+            iconName = focused? 'bar-chart': 'bar-chart-o';
             break;
-          case 'Edit':
+          case 'List':
             iconName = 'file';
             iconType = 'octicon';
             iconSize = 26;
             iconColor = focused? 'black': '#bbb';
+            iconStyle = {paddingLeft: 6}
         }
         return (
           <Icon
             name={iconName}
             size={iconSize}
-            style={{ marginBottom: -3}}
+            containerStyle={iconStyle}
             color={iconColor}
             type={iconType}
           />
@@ -110,9 +84,9 @@ export default TabNavigator(
       },
     }),
     tabBarOptions: {
-      activeTintColor: '#ddd',
+      activeTintColor: 'black',
       inactiveTintColor: '#bbb',
-      showLabel: false,
+      showLabel: true,
       style: {
         backgroundColor: 'white',
       },
@@ -120,6 +94,6 @@ export default TabNavigator(
     tabBarComponent: TabBarBottom,
     tabBarPosition: 'bottom',
     animationEnabled: false,
-    swipeEnabled: false,
+    swipeEnabled: true,
   }
 );
